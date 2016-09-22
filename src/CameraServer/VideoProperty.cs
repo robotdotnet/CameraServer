@@ -12,6 +12,8 @@ namespace CameraServer
 
         private int m_status;
 
+        internal int Handle => m_handle;
+
         public string Name
         {
             get

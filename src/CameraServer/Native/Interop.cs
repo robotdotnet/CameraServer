@@ -288,7 +288,7 @@ namespace CameraServer.Native
             IntPtr data, SinkListenerCallback callback, int eventMask, ref int status);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_RemoteSinkListenerDelegate(int handle, ref int status);
+        internal delegate void CS_RemoveSinkListenerDelegate(int handle, ref int status);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_EnumerateUSBCamerasDelegate(ref int count, ref int status);
@@ -407,7 +407,7 @@ namespace CameraServer.Native
         [NativeDelegate]
         internal static CS_AddSinkListenerDelegate CS_AddSinkListener;
         [NativeDelegate]
-        internal static CS_RemoteSinkListenerDelegate CS_RemoteSinkListener;
+        internal static CS_RemoveSinkListenerDelegate CS_RemoteSinkListener;
         [NativeDelegate]
         internal static CS_EnumerateUSBCamerasDelegate CS_EnumerateUSBCameras;
         [NativeDelegate]
