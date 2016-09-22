@@ -12,8 +12,8 @@ namespace CameraServer
         {
             UIntPtr size;
             byte[] namePtr = CreateUTF8String(name, out size);
-            byte[] 
-            m_handle = CS_CreateHTTPSource()
+            byte[] urlPtr = CreateUTF8String(url, out size);
+            m_handle = CS_CreateHTTPSource(namePtr, urlPtr, ref m_status);
         }
     }
 }

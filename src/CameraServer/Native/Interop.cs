@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using CameraServer.Native.LibraryUtilities;
+using Emgu.CV.Structure;
 
 namespace CameraServer.Native
 {
@@ -205,7 +206,7 @@ namespace CameraServer.Native
         // OpenCV Source Functions
         //
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_PutSourceFrameDelegate(int source, IntPtr image,
+        internal delegate void CS_PutSourceFrameDelegate(int source, ref MCvMat image,
                        ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_NotifySourceErrorDelegate(int source, byte[] msg, ref int status);
@@ -263,7 +264,7 @@ namespace CameraServer.Native
         // OpenCV Sink Functions
         //
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate ulong CS_GrabSinkFrameDelegate(int sink, IntPtr image, ref int status);
+        internal delegate ulong CS_GrabSinkFrameDelegate(int sink, ref MCvMat image, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_GetSinkErrorDelegate(int sink, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
