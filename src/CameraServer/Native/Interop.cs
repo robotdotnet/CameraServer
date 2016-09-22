@@ -299,13 +299,13 @@ namespace CameraServer.Native
         internal delegate IntPtr CS_EnumerateSourcesDelegate(ref int count, ref int status);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_ReleaseEnumeratedSourcesDelegate(IntPtr sources, ref int count);
+        internal delegate void CS_ReleaseEnumeratedSourcesDelegate(IntPtr sources, int count);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_EnumerateSinksDelegate(ref int count, ref int status);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_ReleaseEnumeratedSinksDelegate(IntPtr sinks, ref int count);
+        internal delegate void CS_ReleaseEnumeratedSinksDelegate(IntPtr sinks, int count);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_FreeStringDelegate(IntPtr str);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
