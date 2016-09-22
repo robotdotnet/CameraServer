@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CameraServer
+namespace CameraServer.Native
 {
-    public class Class1
+    public class NativeMethods
     {
-        public Class1()
-        {
-        }
     }
 }
