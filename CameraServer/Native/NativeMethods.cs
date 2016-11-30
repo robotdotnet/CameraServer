@@ -10,13 +10,53 @@ namespace CameraServer.Native
 {
     public static class NativeMethods
     {
+        private static bool CheckStatus(int status)
+        {
+            if (status != 0)
+            {
+                StatusValue s = (StatusValue)status;
+                string msg = null;
+                switch(s)
+                {
+                    case StatusValue.PropertyWriteFailed:
+                        msg = "property write failed";
+                        break;
+                    case StatusValue.InvalidHandle:
+                        msg = "invalid handle";
+                        break;
+                    case StatusValue.WrongHandleSubtype:
+                        msg = "wrong handle subtype";
+                        break;
+                    case StatusValue.InvalidProperty:
+                        msg = "invalid property";
+                        break;
+                    case StatusValue.WrongPropertyType:
+                        msg = "wrong property type";
+                        break;
+                    case StatusValue.PropertyReadFailed:
+                        msg = "read failed";
+                        break;
+                    case StatusValue.SourceIsDisconnected:
+                        msg = "source is disconnected";
+                        break;
+                    default:
+                        {
+                            msg = $"unknown error code={status}";
+                            break;
+                        }
+                }
+                throw new VideoException(msg);
+            }
+            return status == 0;
+        }
+
         public static int CreateCvSink(string name)
         {
             UIntPtr size;
             byte[] str = CreateUTF8String(name, out size);
             int status = 0;
             int ret = CS_CreateCvSink(str, ref status);
-            // TODO: Check status
+            CheckStatus(status);
             return ret;
         }
 
@@ -26,14 +66,14 @@ namespace CameraServer.Native
             byte[] str = CreateUTF8String(description, out size);
             int status = 0;
             CS_SetSinkDescription(handle, str, ref status);
-            // TODO: Check status
+            CheckStatus(status);
         }
 
         public static ulong GrabSinkFrame(int handle, IntPtr nativeObj)
         {
             int status = 0;
             ulong ret = CS_GrabSinkFrame(handle, nativeObj, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -41,7 +81,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             IntPtr ret = CS_GetSinkError(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             string sRet = ReadUTF8String(ret);
             CS_FreeString(ret);
             return sRet;
@@ -51,21 +91,21 @@ namespace CameraServer.Native
         {
             int status = 0;
             CS_SetSinkEnabled(handle, enabled, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
         }
 
         public static void ReleaseSink(int handle)
         {
             int status = 0;
             CS_ReleaseSink(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
         }
 
         public static SinkKind GetSinkKind(int handle)
         {
             int status = 0;
             SinkKind ret = CS_GetSinkKind(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -73,7 +113,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             IntPtr ret = CS_GetSinkName(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             string sRet = ReadUTF8String(ret);
             CS_FreeString(ret);
             return sRet;
@@ -83,7 +123,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             IntPtr ret = CS_GetSinkDescription(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             string sRet = ReadUTF8String(ret);
             CS_FreeString(ret);
             return sRet;
@@ -93,14 +133,14 @@ namespace CameraServer.Native
         {
             int status = 0;
             CS_SetSinkSource(sinkHandle, sourceHandle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
         }
 
         public static int GetSinkSource(int handle)
         {
             int status = 0;
             int ret = CS_GetSinkSource(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -110,7 +150,7 @@ namespace CameraServer.Native
             byte[] str = CreateUTF8String(name, out size);
             int status = 0;
             int prop = CS_GetSinkSourceProperty(handle, str, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return prop;
         }
 
@@ -119,7 +159,7 @@ namespace CameraServer.Native
             int status = 0;
             int count = 0;
             IntPtr sinkArray = CS_EnumerateSinks(ref count, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             List<int> sinks = new List<int>(count);
 
             for (int i = 0; i < count; i++)
@@ -135,14 +175,14 @@ namespace CameraServer.Native
         {
             int status = 0;
             CS_ReleaseSource(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
         }
 
         public static SourceKind GetSourceKind(int handle)
         {
             int status = 0;
             SourceKind ret = CS_GetSourceKind(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -150,7 +190,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             IntPtr ret = CS_GetSourceName(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             string sRet = ReadUTF8String(ret);
             CS_FreeString(ret);
             return sRet;
@@ -160,7 +200,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             IntPtr ret = CS_GetSourceDescription(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             string sRet = ReadUTF8String(ret);
             CS_FreeString(ret);
             return sRet;
@@ -170,7 +210,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             ulong ret = CS_GetSourceLastFrameTime(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -178,7 +218,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             bool ret = CS_IsSourceConnected(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -188,7 +228,7 @@ namespace CameraServer.Native
             byte[] str = CreateUTF8String(name, out size);
             int status = 0;
             int prop = CS_GetSourceProperty(handle, str, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return prop;
         }
 
@@ -197,7 +237,7 @@ namespace CameraServer.Native
             int status = 0;
             int count = 0;
             IntPtr propertyArray = CS_EnumerateSourceProperties(handle, ref count, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             List<int> properties = new List<int>(count);
 
             for (int i = 0; i < count; i++)
@@ -214,7 +254,7 @@ namespace CameraServer.Native
             int status = 0;
             VideoMode mode = new VideoMode();
             CS_GetSourceVideoMode(handle, ref mode, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return mode;
         }
 
@@ -222,7 +262,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             bool ret = CS_SetSourceVideoModeDiscrete(handle, mode.PixelFormat, mode.Width, mode.Height, mode.FPS, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -230,7 +270,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             bool ret = CS_SetSourceVideoModeDiscrete(handle, pixelFormat, width, height, fps, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -238,7 +278,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             bool ret = CS_SetSourcePixelFormat(handle, format, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -246,7 +286,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             bool ret = CS_SetSourceResolution(handle, width, height, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -254,7 +294,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             bool ret = CS_SetSourceFPS(handle, fps, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -264,7 +304,7 @@ namespace CameraServer.Native
             int count = 0;
             int modeSize = Marshal.SizeOf(typeof(VideoMode));
             IntPtr modeArray = CS_EnumerateSourceVideoModes(handle, ref count, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             List<VideoMode> modes = new List<VideoMode>(count);
 
             for (int i = 0; i < count; i++)
@@ -284,7 +324,7 @@ namespace CameraServer.Native
             int status = 0;
             int count = 0;
             IntPtr sinkArray = CS_EnumerateSourceSinks(handle, ref count, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             List<int> sinks = new List<int>(count);
 
             for (int i = 0; i < count; i++)
@@ -301,7 +341,7 @@ namespace CameraServer.Native
             int status = 0;
             int count = 0;
             IntPtr sourceArray = CS_EnumerateSources(ref count, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             List<int> sources = new List<int>(count);
 
             for (int i = 0; i < count; i++)
@@ -317,7 +357,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             IntPtr ret = CS_GetPropertyName(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             string sRet = ReadUTF8String(ret);
             CS_FreeString(ret);
             return sRet;
@@ -327,7 +367,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             PropertyKind ret = CS_GetPropertyKind(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -335,7 +375,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             int ret = CS_GetProperty(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -343,14 +383,14 @@ namespace CameraServer.Native
         {
             int status = 0;
             CS_SetProperty(handle, value, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
         }
 
         public static int GetPropertyMin(int handle)
         {
             int status = 0;
             int ret = CS_GetPropertyMin(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -358,7 +398,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             int ret = CS_GetPropertyMax(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -366,7 +406,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             int ret = CS_GetPropertyDefault(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -374,7 +414,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             int ret = CS_GetPropertyStep(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -382,7 +422,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             IntPtr ret = CS_GetStringProperty(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             string sRet = ReadUTF8String(ret);
             CS_FreeString(ret);
             return sRet;
@@ -394,7 +434,7 @@ namespace CameraServer.Native
             byte[] str = CreateUTF8String(value, out size);
             int status = 0;
             CS_SetStringProperty(handle, str, ref status);
-            // TODO: Check status
+            CheckStatus(status);
         }
 
         public static List<string> GetEnumPropertyChoices(int handle)
@@ -402,7 +442,7 @@ namespace CameraServer.Native
             int status = 0;
             int count = 0;
             IntPtr choicesArray = CS_GetEnumPropertyChoices(handle, ref count, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             List<string> choices = new List<string>(count);
 
             for (int i = 0; i < count; i++)
@@ -421,7 +461,7 @@ namespace CameraServer.Native
             VideoMode mode = new VideoMode(pixelFormat, width, height, fps);
             int status = 0;
             int ret = CS_CreateCvSource(str, ref mode, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -429,7 +469,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             CS_PutSourceFrame(handle, nativeObj, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
         }
 
         public static void NotifySourceError(int handle, string msg)
@@ -438,14 +478,14 @@ namespace CameraServer.Native
             byte[] str = CreateUTF8String(msg, out size);
             int status = 0;
             CS_NotifySourceError(handle, str, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
         }
 
         public static void SetSourceConnected(int handle, bool connected)
         {
             int status = 0;
             CS_SetSourceConnected(handle, connected, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
         }
 
         public static void SetSourceDescription(int handle, string name)
@@ -454,7 +494,7 @@ namespace CameraServer.Native
             byte[] str = CreateUTF8String(name, out size);
             int status = 0;
             CS_SetSourceDescription(handle, str, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
         }
 
         public static int CreateSourceProperty(int handle, string name, PropertyKind kind, int minimum, int maximum, int step, int defaultValue, int value)
@@ -463,7 +503,7 @@ namespace CameraServer.Native
             byte[] str = CreateUTF8String(name, out size);
             int status = 0;
             int ret = CS_CreateSourceProperty(handle, str, kind, minimum, maximum, step, defaultValue, value, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -500,7 +540,7 @@ namespace CameraServer.Native
             {
                 int status = 0;
                 CS_SetSourceEnumPropertyChoices(handle, propertyHandle, nativeChoices, nativeChoices.Length, ref status);
-                // TODO: Check Status
+                CheckStatus(status);
             }
             finally
             {
@@ -518,7 +558,7 @@ namespace CameraServer.Native
             byte[] aStr = CreateUTF8String(listenAddress, out size);
             int status = 0;
             int ret = CS_CreateMJPEGServer(nStr, aStr, port, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -526,7 +566,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             IntPtr ret = CS_GetMJPEGServerListenAddress(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             string sRet = ReadUTF8String(ret);
             CS_FreeString(ret);
             return sRet;
@@ -536,7 +576,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             int ret = CS_GetMJPEGServerPort(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -546,7 +586,7 @@ namespace CameraServer.Native
             byte[] nStr = CreateUTF8String(name, out size);
             int status = 0;
             int ret = CS_CreateUSBCameraDev(nStr, dev, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -557,7 +597,7 @@ namespace CameraServer.Native
             byte[] pStr = CreateUTF8String(path, out size);
             int status = 0;
             int ret = CS_CreateUSBCameraPath(nStr, pStr, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
         }
 
@@ -586,7 +626,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             IntPtr ret = CS_GetUSBCameraPath(handle, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             string sRet = ReadUTF8String(ret);
             CS_FreeString(ret);
             return sRet;
@@ -599,8 +639,51 @@ namespace CameraServer.Native
             byte[] uStr = CreateUTF8String(url, out size);
             int status = 0;
             int ret = CS_CreateHTTPCamera(nStr, uStr, ref status);
-            // TODO: Check Status
+            CheckStatus(status);
             return ret;
+        }
+
+        public static int CopySource(int handle)
+        {
+            int status = 0;
+            int ret = CS_CopySource(handle, ref status);
+            CheckStatus(status);
+            return ret;
+        }
+
+        public static int CopySink(int handle)
+        {
+            int status = 0;
+            int ret = CS_CopySink(handle, ref status);
+            CheckStatus(status);
+            return ret;
+        }
+
+        private static Dictionary<int, CS_ListenerCallback> s_listenerCallbacks = new Dictionary<int, CS_ListenerCallback>();
+
+        public static int AddListener(Action<VideoEvent> listener, int eventMask, bool immediateNotify)
+        {
+            CS_ListenerCallback modCallback = (IntPtr data, ref CSEvent evnt) =>
+            {
+                listener(evnt.ToManaged());
+            };
+
+            int status = 0;
+            int ret = CS_AddListener(IntPtr.Zero, modCallback, eventMask, immediateNotify ? 1 : 0, ref status);
+            CheckStatus(status);
+            s_listenerCallbacks.Add(ret, modCallback);
+            return ret;
+        }
+
+        public static void RemoveListener(int handle)
+        {
+            int status = 0;
+            CS_RemoveListener(handle, ref status);
+            CheckStatus(status);
+            if (s_listenerCallbacks.ContainsKey(handle))
+            {
+                s_listenerCallbacks.Remove(handle);
+            }
         }
     }
 }

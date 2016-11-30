@@ -22,6 +22,11 @@ namespace CameraServer.Native
         private PropertyKind propertyKind;
         private int value;
         private IntPtr valueStr;
+
+        public VideoEvent ToManaged()
+        {
+            return new VideoEvent(kind, source, sink, ReadUTF8String(name), mode.PixelFormat, mode.Width, mode.Height, mode.FPS, property, propertyKind, value, ReadUTF8String(valueStr));
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]

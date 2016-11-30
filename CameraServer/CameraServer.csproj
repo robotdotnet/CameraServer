@@ -65,6 +65,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="USBCamera.cs" />
     <Compile Include="UsbCameraInfo.cs" />
+    <Compile Include="VideoEvent.cs" />
+    <Compile Include="VideoException.cs" />
+    <Compile Include="VideoListener.cs" />
     <Compile Include="VideoMode.cs" />
     <Compile Include="VideoProperty.cs" />
     <Compile Include="VideoSink.cs" />
