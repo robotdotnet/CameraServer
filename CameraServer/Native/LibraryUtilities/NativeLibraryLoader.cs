@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using CameraServer.Native.LibraryUtilities;
 
 namespace CameraServer.Native.LibraryUtilities
 {
@@ -88,7 +90,7 @@ namespace CameraServer.Native.LibraryUtilities
                 throw new InvalidOperationException(
                     "OS type is unknown. Must use the overload to manually load the file");
 
-            if (!m_nativeLibraryName.ContainsKey(OsType))
+            if (!m_nativeLibraryName.ContainsKey(OsType) && !directLoad)
                 throw new InvalidOperationException("OS Type not contained in dictionary");
 
             switch (OsType)
@@ -122,7 +124,7 @@ namespace CameraServer.Native.LibraryUtilities
                 throw new InvalidOperationException(
                     "OS type is unknown. Must use the overload to manually load the file");
 
-            if (!m_nativeLibraryName.ContainsKey(OsType))
+            if (!m_nativeLibraryName.ContainsKey(OsType) && !directLoad)
                 throw new InvalidOperationException("OS Type not contained in dictionary");
 
             switch (OsType)

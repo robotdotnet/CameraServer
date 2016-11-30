@@ -87,6 +87,7 @@ namespace CameraServer.Native
 
                     if (File.Exists("/usr/local/frc/bin/frcRunRobot.sh"))
                     {
+                        Console.WriteLine("On RoboRIO");
                         NativeLoader = new NativeLibraryLoader();
                         // RoboRIO
                         if (s_useCommandLineFile)
@@ -95,7 +96,7 @@ namespace CameraServer.Native
                         }
                         else
                         {
-                            NativeLoader.LoadNativeLibrary<Interop>(new RoboRioLibraryLoader(), resourceRoot + "roborio.libcscore.so");
+                            NativeLoader.LoadNativeLibrary<Interop>(new RoboRioLibraryLoader(), "/usr/local/frc/lib/libcscore.so", true);
                             s_libraryLocation = NativeLoader.LibraryLocation;
                         }
                     }
@@ -245,7 +246,7 @@ namespace CameraServer.Native
         // OpenCV Source Functions
         //
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_PutSourceFrameDelegate(int source, IntPtr image,
+        internal delegate void CS_PutSourceFrameCppDelegate(int source, IntPtr image,
                        ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_NotifySourceErrorDelegate(int source, byte[] msg, ref int status);
@@ -308,7 +309,7 @@ namespace CameraServer.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_SetSinkDescriptionDelegate(int sink, byte[] description, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate ulong CS_GrabSinkFrameDelegate(int sink, IntPtr image, ref int status);
+        internal delegate ulong CS_GrabSinkFrameCppDelegate(int sink, IntPtr image, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_GetSinkErrorDelegate(int sink, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -405,7 +406,7 @@ namespace CameraServer.Native
         [NativeDelegate]
         internal static CS_ReleaseSourceDelegate CS_ReleaseSource;
         [NativeDelegate]
-        internal static CS_PutSourceFrameDelegate CS_PutSourceFrame;
+        internal static CS_PutSourceFrameCppDelegate CS_PutSourceFrameCpp;
         [NativeDelegate]
         internal static CS_NotifySourceErrorDelegate CS_NotifySourceError;
         [NativeDelegate]
@@ -431,7 +432,7 @@ namespace CameraServer.Native
         [NativeDelegate]
         internal static CS_ReleaseSinkDelegate CS_ReleaseSink;
         [NativeDelegate]
-        internal static CS_GrabSinkFrameDelegate CS_GrabSinkFrame;
+        internal static CS_GrabSinkFrameCppDelegate CS_GrabSinkFrameCpp;
         [NativeDelegate]
         internal static CS_GetSinkErrorDelegate CS_GetSinkError;
         [NativeDelegate]

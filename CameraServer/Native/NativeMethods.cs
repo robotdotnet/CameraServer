@@ -72,7 +72,7 @@ namespace CameraServer.Native
         public static ulong GrabSinkFrame(int handle, IntPtr nativeObj)
         {
             int status = 0;
-            ulong ret = CS_GrabSinkFrame(handle, nativeObj, ref status);
+            ulong ret = CS_GrabSinkFrameCpp(handle, nativeObj, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -468,7 +468,7 @@ namespace CameraServer.Native
         public static void PutSourceFrame(int handle, IntPtr nativeObj)
         {
             int status = 0;
-            CS_PutSourceFrame(handle, nativeObj, ref status);
+            CS_PutSourceFrameCpp(handle, nativeObj, ref status);
             CheckStatus(status);
         }
 
