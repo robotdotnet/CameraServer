@@ -517,7 +517,88 @@ namespace CameraServer.Native
             byte[] nStr = CreateUTF8String(name, out size);
             byte[] aStr = CreateUTF8String(listenAddress, out size);
             int status = 0;
-            int ret = CS_CreateMJPEGServerDelegate
+            int ret = CS_CreateMJPEGServer(nStr, aStr, port, ref status);
+            // TODO: Check Status
+            return ret;
+        }
+
+        public static string GetMJPEGServerListenAddress(int handle)
+        {
+            int status = 0;
+            IntPtr ret = CS_GetMJPEGServerListenAddress(handle, ref status);
+            // TODO: Check Status
+            string sRet = ReadUTF8String(ret);
+            CS_FreeString(ret);
+            return sRet;
+        }
+
+        public static int GetMJPEGServerPort(int handle)
+        {
+            int status = 0;
+            int ret = CS_GetMJPEGServerPort(handle, ref status);
+            // TODO: Check Status
+            return ret;
+        }
+
+        public static int CreateUSBCameraDev(string name, int dev)
+        {
+            UIntPtr size;
+            byte[] nStr = CreateUTF8String(name, out size);
+            int status = 0;
+            int ret = CS_CreateUSBCameraDev(nStr, dev, ref status);
+            // TODO: Check Status
+            return ret;
+        }
+
+        public static int CreateUSBCameraPath(string name, string path)
+        {
+            UIntPtr size;
+            byte[] nStr = CreateUTF8String(name, out size);
+            byte[] pStr = CreateUTF8String(path, out size);
+            int status = 0;
+            int ret = CS_CreateUSBCameraPath(nStr, pStr, ref status);
+            // TODO: Check Status
+            return ret;
+        }
+
+        public static List<UsbCameraInfo> EnumerateUSBCameras()
+        {
+            int status = 0;
+            int count = 0;
+            IntPtr camArr = CS_EnumerateUSBCameras(ref count, ref status);
+
+#pragma warning disable CS0618
+            int ptrSize = Marshal.SizeOf(typeof(IntPtr));
+#pragma warning restore CS0618
+            List<UsbCameraInfo> list = new List<UsbCameraInfo>(count);
+            for (int i = 0; i < count; i++)
+            {
+                IntPtr ptr = new IntPtr(camArr.ToInt64() + ptrSize * i);
+                CSUSBCameraInfo info = (CSUSBCameraInfo)Marshal.PtrToStructure(ptr, typeof(CSUSBCameraInfo));
+                list.Add(info.ToManaged());
+
+            }
+            CS_FreeEnumeratedUSBCameras(camArr, count);
+            return list;
+        }
+
+        public static string GetUSBCameraPath(int handle)
+        {
+            int status = 0;
+            IntPtr ret = CS_GetUSBCameraPath(handle, ref status);
+            // TODO: Check Status
+            string sRet = ReadUTF8String(ret);
+            CS_FreeString(ret);
+            return sRet;
+        }
+
+        public static int CreateHTTPCamera(string name, string url)
+        {
+            UIntPtr size;
+            byte[] nStr = CreateUTF8String(name, out size);
+            byte[] uStr = CreateUTF8String(url, out size);
+            int status = 0;
+            int ret = CS_CreateHTTPCamera(nStr, uStr, ref status);
             // TODO: Check Status
             return ret;
         }

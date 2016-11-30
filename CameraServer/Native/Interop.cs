@@ -486,7 +486,8 @@ namespace CameraServer.Native
         internal static CS_GetMJPEGServerListenAddressDelegate CS_GetMJPEGServerListenAddress;
         [NativeDelegate]
         internal static CS_GetMJPEGServerPortDelegate CS_GetMJPEGServerPort;
-        
+        [NativeDelegate]
+        internal static CS_GetUSBCameraPathDelegate CS_GetUSBCameraPath;
 
         internal static byte[] CreateUTF8String(string str, out UIntPtr size)
         {

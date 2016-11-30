@@ -11,7 +11,7 @@ namespace CameraServer
     {
         protected int m_handle;
 
-        protected VideoSource(int handle)
+        protected internal VideoSource(int handle)
         {
             m_handle = handle;
         }

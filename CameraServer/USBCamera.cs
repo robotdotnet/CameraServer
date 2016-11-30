@@ -4,46 +4,151 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CameraServer.Native;
-using static CameraServer.Native.Interop;
+using static CameraServer.Native.NativeMethods;
 
 namespace CameraServer
 {
     public class USBCamera : VideoSource
     {
-        public USBCamera(string name, int dev)
+        private readonly object m_mutex = new object();
+
+        private const string PropWbAuto = "white_balance_temperature_auto";
+        private const string PropWbValue = "white_balance_temperature";
+        private const string PropExAuto = "exposure_auto";
+        private const string PropExValue = "exposure_absolute";
+        private const string PropBrValue = "brightness";
+
+        public class WhiteBalance
         {
-            UIntPtr size;
-            byte[] nameArr = CreateUTF8String(name, out size);
-            m_handle = CS_CreateUSBSourceDev(nameArr, dev, ref m_status);
+            public const int FixedIndoor = 3000;
+            public const int FixedOutdoor1 = 4000;
+            public const int FixedOutdoor2 = 5000;
+            public const int FixedFluorescent1 = 5100;
+            public const int FixedFlourescent2 = 5200;
+        }
+
+        // Cached to avoid duplicate string lookups
+        private VideoProperty m_wbAuto;
+        private VideoProperty m_wbValue;
+        private VideoProperty m_exAuto;
+        private VideoProperty m_exValue;
+        private VideoProperty m_brValue;
+
+        public USBCamera(string name, int dev)
+            : base(CreateUSBCameraDev(name, dev))
+        {
         }
 
         public USBCamera(string name, string path)
+            : base(CreateUSBCameraPath(name, path))
         {
-            UIntPtr size;
-            byte[] nameArr = CreateUTF8String(name, out size);
-            byte[] pathArr = CreateUTF8String(path, out size);
-            m_handle = CS_CreateUSBSourcePath(nameArr, pathArr, ref m_status);
         }
 
-        public static IReadOnlyList<UsbCameraInfo> EnumerateUSBCameras()
+        public static List<UsbCameraInfo> EnumerateUSBCameras()
         {
-            int status = 0;
-            int count = 0;
-            IntPtr camArr = CS_EnumerateUSBCameras(ref count, ref status);
+            return NativeMethods.EnumerateUSBCameras();
+        }
 
-#pragma warning disable CS0618
-            int ptrSize = Marshal.SizeOf(typeof(IntPtr));
-#pragma warning restore CS0618
-            List<UsbCameraInfo> list = new List<UsbCameraInfo>(count);
-            for (int i = 0; i < count; i++)
+        public string Path => GetUSBCameraPath(m_handle);
+
+        public int Brightness
+        {
+            set
             {
-                IntPtr ptr = new IntPtr(camArr.ToInt64() + ptrSize * i);
-                CSUSBCameraInfo info = (CSUSBCameraInfo)Marshal.PtrToStructure(ptr, typeof(CSUSBCameraInfo));
-                list.Add(info.ToManaged());
-
+                if (value > 100)
+                {
+                    value = 100;
+                }
+                else if (value < 0)
+                {
+                    value = 0;
+                }
+                lock (m_mutex)
+                {
+                    if (m_brValue == null) m_brValue = GetProperty(PropBrValue);
+                    m_brValue.Set(value);
+                }
             }
-            CS_FreeEnumeratedUSBCameras(camArr, count);
-            return list;
+            get
+            {
+                lock (m_mutex)
+                {
+                    if (m_brValue == null) m_brValue = GetProperty(PropBrValue);
+                    return m_brValue.Get();
+                }
+            }
+        }
+
+        /// Set the white balance to auto.
+        public void SetWhiteBalanceAuto()
+        {
+            lock (m_mutex)
+            {
+                if (m_wbAuto == null) m_wbAuto = GetProperty(PropWbAuto);
+            m_wbAuto.Set(1);  // auto
+            }
+        }
+
+        /// Set the white balance to hold current.
+        public void SetWhiteBalanceHoldCurrent()
+        {
+            lock (m_mutex)
+            {
+                if (m_wbAuto == null) m_wbAuto = GetProperty(PropWbAuto);
+            m_wbAuto.Set(0);  // manual
+            }
+        }
+
+        /// Set the white balance to manual, with specified color temperature.
+        public void SetWhiteBalanceManual(int value)
+        {
+            lock (m_mutex)
+            {
+                if (m_wbAuto == null) m_wbAuto = GetProperty(PropWbAuto);
+            m_wbAuto.Set(0);  // manual
+            if (m_wbValue == null) m_wbValue = GetProperty(PropWbValue);
+            m_wbValue.Set(value);
+            }
+        }
+
+        /// Set the exposure to auto aperature.
+        public void SetExposureAuto()
+        {
+            lock (m_mutex)
+            {
+                if (m_exAuto == null) m_exAuto = GetProperty(PropExAuto);
+            m_exAuto.Set(0);  // auto; yes, this is opposite of white balance.
+            }
+        }
+
+        /// Set the exposure to hold current.
+        public void SetExposureHoldCurrent()
+        {
+            lock (m_mutex)
+            {
+                if (m_exAuto == null) m_exAuto = GetProperty(PropExAuto);
+            m_exAuto.Set(1);  // manual
+            }
+        }
+
+        /// Set the exposure to manual, as a percentage (0-100).
+        public void SetExposureManual(int value)
+        {
+            lock (m_mutex)
+            {
+                if (m_exAuto == null) m_exAuto = GetProperty(PropExAuto);
+                m_exAuto.Set(1);  // manual
+                if (value > 100)
+                {
+                    value = 100;
+                }
+                else if (value < 0)
+                {
+                    value = 0;
+                }
+                if (m_exValue == null) m_exValue = GetProperty(PropExValue);
+                m_exValue.Set(value);
+            }
         }
     }
 }

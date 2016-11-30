@@ -43,8 +43,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="CvSink.cs" />
+    <Compile Include="CvSource.cs" />
+    <Compile Include="Enumerations.cs" />
+    <Compile Include="HTTPCamera.cs" />
+    <Compile Include="MJPEGServer.cs" />
+    <Compile Include="Native\Interop.cs" />
+    <Compile Include="Native\LibraryUtilities\ILibraryInformation.cs" />
+    <Compile Include="Native\LibraryUtilities\ILibraryLoader.cs" />
+    <Compile Include="Native\LibraryUtilities\LinuxLibraryLoader.cs" />
+    <Compile Include="Native\LibraryUtilities\MacOsLibraryLoader.cs" />
+    <Compile Include="Native\LibraryUtilities\NativeDelegateAttribute.cs" />
+    <Compile Include="Native\LibraryUtilities\NativeDelegateInitializer.cs" />
+    <Compile Include="Native\LibraryUtilities\NativeLibraryLoader.cs" />
+    <Compile Include="Native\LibraryUtilities\OsType.cs" />
+    <Compile Include="Native\LibraryUtilities\RoboRioLibraryLoader.cs" />
+    <Compile Include="Native\LibraryUtilities\Uname.cs" />
+    <Compile Include="Native\LibraryUtilities\WindowsLibraryLoader.cs" />
+    <Compile Include="Native\NativeMethods.cs" />
+    <Compile Include="Native\Structs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="USBCamera.cs" />
+    <Compile Include="UsbCameraInfo.cs" />
+    <Compile Include="VideoMode.cs" />
+    <Compile Include="VideoProperty.cs" />
+    <Compile Include="VideoSink.cs" />
+    <Compile Include="VideoSource.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

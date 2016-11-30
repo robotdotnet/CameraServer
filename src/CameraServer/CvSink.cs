@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Emgu.CV;
 using static CameraServer.Native.Interop;
+using Emgu.CV.Structure;
 
 namespace CameraServer
 {
