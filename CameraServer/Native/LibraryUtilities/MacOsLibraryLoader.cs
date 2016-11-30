@@ -4,13 +4,15 @@ using System.Runtime.InteropServices;
 
 namespace CameraServer.Native.LibraryUtilities
 {
+    /// <summary>
+    /// This class handles native libraries on Mac OS
+    /// </summary>
     [ExcludeFromCodeCoverage]
-    internal class RoboRioLibraryLoader : ILibraryLoader
+    public class MacOsLibraryLoader : ILibraryLoader
     {
         /// <inheritdoc/>
         public IntPtr NativeLibraryHandle { get; private set; } = IntPtr.Zero;
 
-        /// <inheritdoc/>
         void ILibraryLoader.LoadLibrary(string filename)
         {
             if (!File.Exists(filename))
@@ -28,7 +30,6 @@ namespace CameraServer.Native.LibraryUtilities
             }
         }
 
-        /// <inheritdoc/>
         IntPtr ILibraryLoader.GetProcAddress(string name)
         {
             dlerror();
@@ -41,22 +42,21 @@ namespace CameraServer.Native.LibraryUtilities
             return result;
         }
 
-        /// <inheritdoc/>
         void ILibraryLoader.UnloadLibrary()
         {
             dlclose(NativeLibraryHandle);
         }
 
-        [DllImport("libdl.so.2")]
+        [DllImport("dl")]
         private static extern IntPtr dlopen(string fileName, int flags);
 
-        [DllImport("libdl.so.2")]
+        [DllImport("dl")]
         private static extern IntPtr dlsym(IntPtr handle, string symbol);
 
-        [DllImport("libdl.so.2")]
+        [DllImport("dl")]
         private static extern IntPtr dlerror();
 
-        [DllImport("libdl.so.2")]
+        [DllImport("dl")]
         private static extern int dlclose(IntPtr handle);
     }
 }

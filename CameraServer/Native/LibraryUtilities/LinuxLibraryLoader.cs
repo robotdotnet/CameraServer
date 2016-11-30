@@ -4,8 +4,11 @@ using System.Runtime.InteropServices;
 
 namespace CameraServer.Native.LibraryUtilities
 {
+    /// <summary>
+    /// This class handles native libraries on Linux
+    /// </summary>
     [ExcludeFromCodeCoverage]
-    internal class RoboRioLibraryLoader : ILibraryLoader
+    public class LinuxLibraryLoader : ILibraryLoader
     {
         /// <inheritdoc/>
         public IntPtr NativeLibraryHandle { get; private set; } = IntPtr.Zero;
@@ -47,16 +50,16 @@ namespace CameraServer.Native.LibraryUtilities
             dlclose(NativeLibraryHandle);
         }
 
-        [DllImport("libdl.so.2")]
+        [DllImport("dl")]
         private static extern IntPtr dlopen(string fileName, int flags);
 
-        [DllImport("libdl.so.2")]
+        [DllImport("dl")]
         private static extern IntPtr dlsym(IntPtr handle, string symbol);
 
-        [DllImport("libdl.so.2")]
+        [DllImport("dl")]
         private static extern IntPtr dlerror();
 
-        [DllImport("libdl.so.2")]
+        [DllImport("dl")]
         private static extern int dlclose(IntPtr handle);
     }
 }
