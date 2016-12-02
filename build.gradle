@@ -11,19 +11,9 @@ allprojects {
     }
 }
 
-def buildVersion =  project.version != 'unspecified' ? project.version : '1.0.0'
-
-def packageVersion
-
-def release = project.hasProperty('release')
-
-def buildNum = project.hasProperty('buildNumber') ? project.buildNumber : '0'
-
-if (release) {
-    packageVersion = buildVersion
-} else {
-    packageVersion = buildVersion + '-beta-' + buildNum
-}
+def buildVersion =  project.hasProperty('buildVersion') ? project.buildVersion : '1.0.0'
+def buildType = project.hasProperty('buildType') ? project.buildType : ''
+def buildNumber = project.hasProperty('buildNumber') ? project.buildNumber : ''
 
 msbuild {
     projectFile = file("${rootDir}/CameraServer/CameraServer.csproj")
@@ -35,12 +25,7 @@ msbuild {
 }
 
 assemblyInfoPatcher {
-    version = buildVersion + '.' + buildNum
-    if (!release) {
-        fileVersion = version + '-Beta'
-    } else {
-        fileVersion = version
-    }
+    version = buildVersion + '.' + '0'
 }
 
 nugetSpec {
@@ -55,7 +40,7 @@ nugetSpec {
             copyright: '2016-2017',
             projectUrl: 'https://github.com/robotdotnet/CameraServer',
             licenseUrl: 'https://github.com/robotdotnet/CameraServer/LICENSE.txt',
-            version: packageVersion
+            version: buildVersion + buildType + buildNumber
         ],
         files: [
             { file (src: "${rootDir}/CameraServer/bin/Release/CameraServer.dll", target: 'lib')},

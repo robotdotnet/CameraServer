@@ -1,30 +1,30 @@
-param (
-  [switch]$release = $false
-)
-
 If (Test-Path Env:APPVEYOR_REPO_TAG_NAME) {
+  $version = ($env:APPVEYOR_REPO_TAG_NAME).Substring(1)  
   if (($env:APPVEYOR_REPO_TAG_NAME).Contains("-") -eq $false) {
-     $release = $true
+    #Building a Full Release
+     $type = ""
+     $buildNumber = ""
      echo "Tagged Release"
+    } Else {
+      #Building a Beta
+      $version = ($version).Substring(0, (($env:APPVEYOR_REPO_TAG_NAME).IndexOf("-") - 1))
+      $type = ($env:APPVEYOR_REPO_TAG_NAME).Substring((($env:APPVEYOR_REPO_TAG_NAME).IndexOf("-")))
+      $buildNumber = ""
+      echo "Tag but not release"
     }
-    echo "Tag but not release"
-}
-
-$version = "-Pversion=2017.0.1"
-
-
-If ($release) {
- $releaseString = "-Prelease"
- $revision =  "-PbuildNumber=0"
 } Else {
- $releaseString = ""
- $revision = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1 }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
- $revision = "-PbuildNumber=`"{0:D4}`"" -f [convert]::ToInt32($revision, 10)
+  $version = "2017.0.0"
+  $type = "-ci-"
+  $buildNumber = @{ $true = $env:APPVEYOR_BUILD_NUMBER; $false = 1 }[$env:APPVEYOR_BUILD_NUMBER -ne $NULL];
+  $buildNumber = "{0:D4}" -f [convert]::ToInt32($buildNumber, 10), $buildNumber
 }
 
-echo $revision
 
-./gradlew build $version $releaseString $revision
+echo $version
+echo $type
+echo $buildNumber
+
+./gradlew build -PbuildVersion="$version" -PbuildType="$type" -PbuildNumber="$buildNumber"
 
 If (($env:APPVEYOR_REPO_BRANCH -eq "master") -and (!$env:APPVEYOR_PULL_REQUEST_NUMBER)) {
   if ($env:APPVEYOR) {
