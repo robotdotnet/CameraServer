@@ -162,6 +162,9 @@ publish/
 csx/
 *.build.csdef
 
+.gradle
+build/
+
 # Microsoft Azure Emulator
 ecf/
 rcf/
