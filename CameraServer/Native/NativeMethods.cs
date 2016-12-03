@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
-using static CameraServer.Native.Interop;
 
-namespace CameraServer.Native
+namespace CSCore.Native
 {
     public static class NativeMethods
     {
@@ -53,9 +50,9 @@ namespace CameraServer.Native
         public static int CreateCvSink(string name)
         {
             UIntPtr size;
-            byte[] str = CreateUTF8String(name, out size);
+            byte[] str = Interop.CreateUTF8String(name, out size);
             int status = 0;
-            int ret = CS_CreateCvSink(str, ref status);
+            int ret = Interop.CS_CreateCvSink(str, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -63,16 +60,16 @@ namespace CameraServer.Native
         public static void SetSinkDescription(int handle, string description)
         {
             UIntPtr size;
-            byte[] str = CreateUTF8String(description, out size);
+            byte[] str = Interop.CreateUTF8String(description, out size);
             int status = 0;
-            CS_SetSinkDescription(handle, str, ref status);
+            Interop.CS_SetSinkDescription(handle, str, ref status);
             CheckStatus(status);
         }
 
         public static ulong GrabSinkFrame(int handle, IntPtr nativeObj)
         {
             int status = 0;
-            ulong ret = CS_GrabSinkFrameCpp(handle, nativeObj, ref status);
+            ulong ret = Interop.CS_GrabSinkFrameCpp(handle, nativeObj, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -80,31 +77,31 @@ namespace CameraServer.Native
         public static string GetSinkError(int handle)
         {
             int status = 0;
-            IntPtr ret = CS_GetSinkError(handle, ref status);
+            IntPtr ret = Interop.CS_GetSinkError(handle, ref status);
             CheckStatus(status);
-            string sRet = ReadUTF8String(ret);
-            CS_FreeString(ret);
+            string sRet = Interop.ReadUTF8String(ret);
+            Interop.CS_FreeString(ret);
             return sRet;
         }
 
         public static void SetSinkEnabled(int handle, bool enabled)
         {
             int status = 0;
-            CS_SetSinkEnabled(handle, enabled, ref status);
+            Interop.CS_SetSinkEnabled(handle, enabled, ref status);
             CheckStatus(status);
         }
 
         public static void ReleaseSink(int handle)
         {
             int status = 0;
-            CS_ReleaseSink(handle, ref status);
+            Interop.CS_ReleaseSink(handle, ref status);
             CheckStatus(status);
         }
 
         public static SinkKind GetSinkKind(int handle)
         {
             int status = 0;
-            SinkKind ret = CS_GetSinkKind(handle, ref status);
+            SinkKind ret = Interop.CS_GetSinkKind(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -112,34 +109,34 @@ namespace CameraServer.Native
         public static string GetSinkName(int handle)
         {
             int status = 0;
-            IntPtr ret = CS_GetSinkName(handle, ref status);
+            IntPtr ret = Interop.CS_GetSinkName(handle, ref status);
             CheckStatus(status);
-            string sRet = ReadUTF8String(ret);
-            CS_FreeString(ret);
+            string sRet = Interop.ReadUTF8String(ret);
+            Interop.CS_FreeString(ret);
             return sRet;
         }
 
         public static string GetSinkDescription(int handle)
         {
             int status = 0;
-            IntPtr ret = CS_GetSinkDescription(handle, ref status);
+            IntPtr ret = Interop.CS_GetSinkDescription(handle, ref status);
             CheckStatus(status);
-            string sRet = ReadUTF8String(ret);
-            CS_FreeString(ret);
+            string sRet = Interop.ReadUTF8String(ret);
+            Interop.CS_FreeString(ret);
             return sRet;
         }
 
         public static void SetSinkSource(int sinkHandle, int sourceHandle)
         {
             int status = 0;
-            CS_SetSinkSource(sinkHandle, sourceHandle, ref status);
+            Interop.CS_SetSinkSource(sinkHandle, sourceHandle, ref status);
             CheckStatus(status);
         }
 
         public static int GetSinkSource(int handle)
         {
             int status = 0;
-            int ret = CS_GetSinkSource(handle, ref status);
+            int ret = Interop.CS_GetSinkSource(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -147,9 +144,9 @@ namespace CameraServer.Native
         public static int GetSinkSourceProperty(int handle, string name)
         {
             UIntPtr size;
-            byte[] str = CreateUTF8String(name, out size);
+            byte[] str = Interop.CreateUTF8String(name, out size);
             int status = 0;
-            int prop = CS_GetSinkSourceProperty(handle, str, ref status);
+            int prop = Interop.CS_GetSinkSourceProperty(handle, str, ref status);
             CheckStatus(status);
             return prop;
         }
@@ -158,7 +155,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             int count = 0;
-            IntPtr sinkArray = CS_EnumerateSinks(ref count, ref status);
+            IntPtr sinkArray = Interop.CS_EnumerateSinks(ref count, ref status);
             CheckStatus(status);
             List<int> sinks = new List<int>(count);
 
@@ -167,21 +164,21 @@ namespace CameraServer.Native
                 int handle = Marshal.ReadInt32(sinkArray, i);
                 sinks.Add(handle);
             }
-            CS_ReleaseEnumeratedSinks(sinkArray, count);
+            Interop.CS_ReleaseEnumeratedSinks(sinkArray, count);
             return sinks;
         }
 
         public static void ReleaseSource(int handle)
         {
             int status = 0;
-            CS_ReleaseSource(handle, ref status);
+            Interop.CS_ReleaseSource(handle, ref status);
             CheckStatus(status);
         }
 
         public static SourceKind GetSourceKind(int handle)
         {
             int status = 0;
-            SourceKind ret = CS_GetSourceKind(handle, ref status);
+            SourceKind ret = Interop.CS_GetSourceKind(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -189,27 +186,27 @@ namespace CameraServer.Native
         public static string GetSourceName(int handle)
         {
             int status = 0;
-            IntPtr ret = CS_GetSourceName(handle, ref status);
+            IntPtr ret = Interop.CS_GetSourceName(handle, ref status);
             CheckStatus(status);
-            string sRet = ReadUTF8String(ret);
-            CS_FreeString(ret);
+            string sRet = Interop.ReadUTF8String(ret);
+            Interop.CS_FreeString(ret);
             return sRet;
         }
 
         public static string GetSourceDescription(int handle)
         {
             int status = 0;
-            IntPtr ret = CS_GetSourceDescription(handle, ref status);
+            IntPtr ret = Interop.CS_GetSourceDescription(handle, ref status);
             CheckStatus(status);
-            string sRet = ReadUTF8String(ret);
-            CS_FreeString(ret);
+            string sRet = Interop.ReadUTF8String(ret);
+            Interop.CS_FreeString(ret);
             return sRet;
         }
 
         public static ulong GetSourceLastFrameTime(int handle)
         {
             int status = 0;
-            ulong ret = CS_GetSourceLastFrameTime(handle, ref status);
+            ulong ret = Interop.CS_GetSourceLastFrameTime(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -217,7 +214,7 @@ namespace CameraServer.Native
         public static bool IsSourceConnected(int handle)
         {
             int status = 0;
-            bool ret = CS_IsSourceConnected(handle, ref status);
+            bool ret = Interop.CS_IsSourceConnected(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -225,9 +222,9 @@ namespace CameraServer.Native
         public static int GetSourceProperty(int handle, string name)
         {
             UIntPtr size;
-            byte[] str = CreateUTF8String(name, out size);
+            byte[] str = Interop.CreateUTF8String(name, out size);
             int status = 0;
-            int prop = CS_GetSourceProperty(handle, str, ref status);
+            int prop = Interop.CS_GetSourceProperty(handle, str, ref status);
             CheckStatus(status);
             return prop;
         }
@@ -236,7 +233,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             int count = 0;
-            IntPtr propertyArray = CS_EnumerateSourceProperties(handle, ref count, ref status);
+            IntPtr propertyArray = Interop.CS_EnumerateSourceProperties(handle, ref count, ref status);
             CheckStatus(status);
             List<int> properties = new List<int>(count);
 
@@ -245,7 +242,7 @@ namespace CameraServer.Native
                 int h = Marshal.ReadInt32(propertyArray, i);
                 properties.Add(h);
             }
-            CS_ReleaseEnumeratedSources(propertyArray, count);
+            Interop.CS_ReleaseEnumeratedSources(propertyArray, count);
             return properties;
         }
 
@@ -253,7 +250,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             VideoMode mode = new VideoMode();
-            CS_GetSourceVideoMode(handle, ref mode, ref status);
+            Interop.CS_GetSourceVideoMode(handle, ref mode, ref status);
             CheckStatus(status);
             return mode;
         }
@@ -261,7 +258,7 @@ namespace CameraServer.Native
         public static bool SetSourceVideoMode(int handle, VideoMode mode)
         {
             int status = 0;
-            bool ret = CS_SetSourceVideoModeDiscrete(handle, mode.PixelFormat, mode.Width, mode.Height, mode.FPS, ref status);
+            bool ret = Interop.CS_SetSourceVideoModeDiscrete(handle, mode.PixelFormat, mode.Width, mode.Height, mode.FPS, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -269,7 +266,7 @@ namespace CameraServer.Native
         public static bool SetSourceVideoMode(int handle, PixelFormat pixelFormat, int width, int height, int fps)
         {
             int status = 0;
-            bool ret = CS_SetSourceVideoModeDiscrete(handle, pixelFormat, width, height, fps, ref status);
+            bool ret = Interop.CS_SetSourceVideoModeDiscrete(handle, pixelFormat, width, height, fps, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -277,7 +274,7 @@ namespace CameraServer.Native
         public static bool SetSourcePixelFormat(int handle, PixelFormat format)
         {
             int status = 0;
-            bool ret = CS_SetSourcePixelFormat(handle, format, ref status);
+            bool ret = Interop.CS_SetSourcePixelFormat(handle, format, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -285,7 +282,7 @@ namespace CameraServer.Native
         public static bool SetSourceResolution(int handle, int width, int height)
         {
             int status = 0;
-            bool ret = CS_SetSourceResolution(handle, width, height, ref status);
+            bool ret = Interop.CS_SetSourceResolution(handle, width, height, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -293,7 +290,7 @@ namespace CameraServer.Native
         public static bool SetSourceFPS(int handle, int fps)
         {
             int status = 0;
-            bool ret = CS_SetSourceFPS(handle, fps, ref status);
+            bool ret = Interop.CS_SetSourceFPS(handle, fps, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -303,7 +300,7 @@ namespace CameraServer.Native
             int status = 0;
             int count = 0;
             int modeSize = Marshal.SizeOf(typeof(VideoMode));
-            IntPtr modeArray = CS_EnumerateSourceVideoModes(handle, ref count, ref status);
+            IntPtr modeArray = Interop.CS_EnumerateSourceVideoModes(handle, ref count, ref status);
             CheckStatus(status);
             List<VideoMode> modes = new List<VideoMode>(count);
 
@@ -315,7 +312,7 @@ namespace CameraServer.Native
 #pragma warning restore CS0618
                 modes.Add(con);
             }
-            CS_FreeEnumeratedVideoModes(modeArray, modeSize);
+            Interop.CS_FreeEnumeratedVideoModes(modeArray, modeSize);
             return modes;
         }
 
@@ -323,7 +320,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             int count = 0;
-            IntPtr sinkArray = CS_EnumerateSourceSinks(handle, ref count, ref status);
+            IntPtr sinkArray = Interop.CS_EnumerateSourceSinks(handle, ref count, ref status);
             CheckStatus(status);
             List<int> sinks = new List<int>(count);
 
@@ -332,7 +329,7 @@ namespace CameraServer.Native
                 int h = Marshal.ReadInt32(sinkArray, i);
                 sinks.Add(h);
             }
-            CS_ReleaseEnumeratedSinks(sinkArray, count);
+            Interop.CS_ReleaseEnumeratedSinks(sinkArray, count);
             return sinks;
         }
 
@@ -340,7 +337,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             int count = 0;
-            IntPtr sourceArray = CS_EnumerateSources(ref count, ref status);
+            IntPtr sourceArray = Interop.CS_EnumerateSources(ref count, ref status);
             CheckStatus(status);
             List<int> sources = new List<int>(count);
 
@@ -349,24 +346,24 @@ namespace CameraServer.Native
                 int h = Marshal.ReadInt32(sourceArray, i);
                 sources.Add(h);
             }
-            CS_ReleaseEnumeratedSources(sourceArray, count);
+            Interop.CS_ReleaseEnumeratedSources(sourceArray, count);
             return sources;
         }
 
         public static string GetPropertyName(int handle)
         {
             int status = 0;
-            IntPtr ret = CS_GetPropertyName(handle, ref status);
+            IntPtr ret = Interop.CS_GetPropertyName(handle, ref status);
             CheckStatus(status);
-            string sRet = ReadUTF8String(ret);
-            CS_FreeString(ret);
+            string sRet = Interop.ReadUTF8String(ret);
+            Interop.CS_FreeString(ret);
             return sRet;
         }
 
         public static PropertyKind GetPropertyKind(int handle)
         {
             int status = 0;
-            PropertyKind ret = CS_GetPropertyKind(handle, ref status);
+            PropertyKind ret = Interop.CS_GetPropertyKind(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -374,7 +371,7 @@ namespace CameraServer.Native
         public static int GetProperty(int handle)
         {
             int status = 0;
-            int ret = CS_GetProperty(handle, ref status);
+            int ret = Interop.CS_GetProperty(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -382,14 +379,14 @@ namespace CameraServer.Native
         public static void SetProperty(int handle, int value)
         {
             int status = 0;
-            CS_SetProperty(handle, value, ref status);
+            Interop.CS_SetProperty(handle, value, ref status);
             CheckStatus(status);
         }
 
         public static int GetPropertyMin(int handle)
         {
             int status = 0;
-            int ret = CS_GetPropertyMin(handle, ref status);
+            int ret = Interop.CS_GetPropertyMin(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -397,7 +394,7 @@ namespace CameraServer.Native
         public static int GetPropertyMax(int handle)
         {
             int status = 0;
-            int ret = CS_GetPropertyMax(handle, ref status);
+            int ret = Interop.CS_GetPropertyMax(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -405,7 +402,7 @@ namespace CameraServer.Native
         public static int GetPropertyDefault(int handle)
         {
             int status = 0;
-            int ret = CS_GetPropertyDefault(handle, ref status);
+            int ret = Interop.CS_GetPropertyDefault(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -413,7 +410,7 @@ namespace CameraServer.Native
         public static int GetPropertyStep(int handle)
         {
             int status = 0;
-            int ret = CS_GetPropertyStep(handle, ref status);
+            int ret = Interop.CS_GetPropertyStep(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -421,19 +418,19 @@ namespace CameraServer.Native
         public static string GetStringProperty(int handle)
         {
             int status = 0;
-            IntPtr ret = CS_GetStringProperty(handle, ref status);
+            IntPtr ret = Interop.CS_GetStringProperty(handle, ref status);
             CheckStatus(status);
-            string sRet = ReadUTF8String(ret);
-            CS_FreeString(ret);
+            string sRet = Interop.ReadUTF8String(ret);
+            Interop.CS_FreeString(ret);
             return sRet;
         }
 
         public static void SetStringProperty(int handle, string value)
         {
             UIntPtr size;
-            byte[] str = CreateUTF8String(value, out size);
+            byte[] str = Interop.CreateUTF8String(value, out size);
             int status = 0;
-            CS_SetStringProperty(handle, str, ref status);
+            Interop.CS_SetStringProperty(handle, str, ref status);
             CheckStatus(status);
         }
 
@@ -442,26 +439,26 @@ namespace CameraServer.Native
             int status = 0;
             int count = 0;
             int ptrSize = Marshal.SizeOf(typeof(IntPtr));
-            IntPtr choicesArray = CS_GetEnumPropertyChoices(handle, ref count, ref status);
+            IntPtr choicesArray = Interop.CS_GetEnumPropertyChoices(handle, ref count, ref status);
             CheckStatus(status);
             List<string> choices = new List<string>(count);
 
             for (int i = 0; i < count; i++)
             {
                 IntPtr h = new IntPtr(choicesArray.ToInt64() + ptrSize * i);
-                choices.Add(ReadUTF8String(h));
+                choices.Add(Interop.ReadUTF8String(h));
             }
-            CS_FreeEnumPropertyChoices(choicesArray, count);
+            Interop.CS_FreeEnumPropertyChoices(choicesArray, count);
             return choices;
         }
 
         public static int CreateCvSource(string name, PixelFormat pixelFormat, int width, int height, int fps)
         {
             UIntPtr size;
-            byte[] str = CreateUTF8String(name, out size);
+            byte[] str = Interop.CreateUTF8String(name, out size);
             VideoMode mode = new VideoMode(pixelFormat, width, height, fps);
             int status = 0;
-            int ret = CS_CreateCvSource(str, ref mode, ref status);
+            int ret = Interop.CS_CreateCvSource(str, ref mode, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -469,41 +466,41 @@ namespace CameraServer.Native
         public static void PutSourceFrame(int handle, IntPtr nativeObj)
         {
             int status = 0;
-            CS_PutSourceFrameCpp(handle, nativeObj, ref status);
+            Interop.CS_PutSourceFrameCpp(handle, nativeObj, ref status);
             CheckStatus(status);
         }
 
         public static void NotifySourceError(int handle, string msg)
         {
             UIntPtr size;
-            byte[] str = CreateUTF8String(msg, out size);
+            byte[] str = Interop.CreateUTF8String(msg, out size);
             int status = 0;
-            CS_NotifySourceError(handle, str, ref status);
+            Interop.CS_NotifySourceError(handle, str, ref status);
             CheckStatus(status);
         }
 
         public static void SetSourceConnected(int handle, bool connected)
         {
             int status = 0;
-            CS_SetSourceConnected(handle, connected, ref status);
+            Interop.CS_SetSourceConnected(handle, connected, ref status);
             CheckStatus(status);
         }
 
         public static void SetSourceDescription(int handle, string name)
         {
             UIntPtr size;
-            byte[] str = CreateUTF8String(name, out size);
+            byte[] str = Interop.CreateUTF8String(name, out size);
             int status = 0;
-            CS_SetSourceDescription(handle, str, ref status);
+            Interop.CS_SetSourceDescription(handle, str, ref status);
             CheckStatus(status);
         }
 
         public static int CreateSourceProperty(int handle, string name, PropertyKind kind, int minimum, int maximum, int step, int defaultValue, int value)
         {
             UIntPtr size;
-            byte[] str = CreateUTF8String(name, out size);
+            byte[] str = Interop.CreateUTF8String(name, out size);
             int status = 0;
-            int ret = CS_CreateSourceProperty(handle, str, kind, minimum, maximum, step, defaultValue, value, ref status);
+            int ret = Interop.CS_CreateSourceProperty(handle, str, kind, minimum, maximum, step, defaultValue, value, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -540,7 +537,7 @@ namespace CameraServer.Native
             try
             {
                 int status = 0;
-                CS_SetSourceEnumPropertyChoices(handle, propertyHandle, nativeChoices, nativeChoices.Length, ref status);
+                Interop.CS_SetSourceEnumPropertyChoices(handle, propertyHandle, nativeChoices, nativeChoices.Length, ref status);
                 CheckStatus(status);
             }
             finally
@@ -555,10 +552,10 @@ namespace CameraServer.Native
         public static int CreateMJPEGServer(string name, string listenAddress, int port)
         {
             UIntPtr size;
-            byte[] nStr = CreateUTF8String(name, out size);
-            byte[] aStr = CreateUTF8String(listenAddress, out size);
+            byte[] nStr = Interop.CreateUTF8String(name, out size);
+            byte[] aStr = Interop.CreateUTF8String(listenAddress, out size);
             int status = 0;
-            int ret = CS_CreateMJPEGServer(nStr, aStr, port, ref status);
+            int ret = Interop.CS_CreateMJPEGServer(nStr, aStr, port, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -566,17 +563,17 @@ namespace CameraServer.Native
         public static string GetMJPEGServerListenAddress(int handle)
         {
             int status = 0;
-            IntPtr ret = CS_GetMJPEGServerListenAddress(handle, ref status);
+            IntPtr ret = Interop.CS_GetMJPEGServerListenAddress(handle, ref status);
             CheckStatus(status);
-            string sRet = ReadUTF8String(ret);
-            CS_FreeString(ret);
+            string sRet = Interop.ReadUTF8String(ret);
+            Interop.CS_FreeString(ret);
             return sRet;
         }
 
         public static int GetMJPEGServerPort(int handle)
         {
             int status = 0;
-            int ret = CS_GetMJPEGServerPort(handle, ref status);
+            int ret = Interop.CS_GetMJPEGServerPort(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -584,9 +581,9 @@ namespace CameraServer.Native
         public static int CreateUSBCameraDev(string name, int dev)
         {
             UIntPtr size;
-            byte[] nStr = CreateUTF8String(name, out size);
+            byte[] nStr = Interop.CreateUTF8String(name, out size);
             int status = 0;
-            int ret = CS_CreateUSBCameraDev(nStr, dev, ref status);
+            int ret = Interop.CS_CreateUSBCameraDev(nStr, dev, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -594,10 +591,10 @@ namespace CameraServer.Native
         public static int CreateUSBCameraPath(string name, string path)
         {
             UIntPtr size;
-            byte[] nStr = CreateUTF8String(name, out size);
-            byte[] pStr = CreateUTF8String(path, out size);
+            byte[] nStr = Interop.CreateUTF8String(name, out size);
+            byte[] pStr = Interop.CreateUTF8String(path, out size);
             int status = 0;
-            int ret = CS_CreateUSBCameraPath(nStr, pStr, ref status);
+            int ret = Interop.CS_CreateUSBCameraPath(nStr, pStr, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -606,7 +603,7 @@ namespace CameraServer.Native
         {
             int status = 0;
             int count = 0;
-            IntPtr camArr = CS_EnumerateUSBCameras(ref count, ref status);
+            IntPtr camArr = Interop.CS_EnumerateUSBCameras(ref count, ref status);
 
 #pragma warning disable CS0618
             int ptrSize = Marshal.SizeOf(typeof(IntPtr));
@@ -619,27 +616,27 @@ namespace CameraServer.Native
                 list.Add(info.ToManaged());
 
             }
-            CS_FreeEnumeratedUSBCameras(camArr, count);
+            Interop.CS_FreeEnumeratedUSBCameras(camArr, count);
             return list;
         }
 
         public static string GetUSBCameraPath(int handle)
         {
             int status = 0;
-            IntPtr ret = CS_GetUSBCameraPath(handle, ref status);
+            IntPtr ret = Interop.CS_GetUSBCameraPath(handle, ref status);
             CheckStatus(status);
-            string sRet = ReadUTF8String(ret);
-            CS_FreeString(ret);
+            string sRet = Interop.ReadUTF8String(ret);
+            Interop.CS_FreeString(ret);
             return sRet;
         }
 
         public static int CreateHTTPCamera(string name, string url)
         {
             UIntPtr size;
-            byte[] nStr = CreateUTF8String(name, out size);
-            byte[] uStr = CreateUTF8String(url, out size);
+            byte[] nStr = Interop.CreateUTF8String(name, out size);
+            byte[] uStr = Interop.CreateUTF8String(url, out size);
             int status = 0;
-            int ret = CS_CreateHTTPCamera(nStr, uStr, ref status);
+            int ret = Interop.CS_CreateHTTPCamera(nStr, uStr, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -647,7 +644,7 @@ namespace CameraServer.Native
         public static int CopySource(int handle)
         {
             int status = 0;
-            int ret = CS_CopySource(handle, ref status);
+            int ret = Interop.CS_CopySource(handle, ref status);
             CheckStatus(status);
             return ret;
         }
@@ -655,22 +652,22 @@ namespace CameraServer.Native
         public static int CopySink(int handle)
         {
             int status = 0;
-            int ret = CS_CopySink(handle, ref status);
+            int ret = Interop.CS_CopySink(handle, ref status);
             CheckStatus(status);
             return ret;
         }
 
-        private static Dictionary<int, CS_ListenerCallback> s_listenerCallbacks = new Dictionary<int, CS_ListenerCallback>();
+        private static Dictionary<int, Interop.CS_ListenerCallback> s_listenerCallbacks = new Dictionary<int, Interop.CS_ListenerCallback>();
 
         public static int AddListener(Action<VideoEvent> listener, int eventMask, bool immediateNotify)
         {
-            CS_ListenerCallback modCallback = (IntPtr data, ref CSEvent evnt) =>
+            Interop.CS_ListenerCallback modCallback = (IntPtr data, ref CSEvent evnt) =>
             {
                 listener(evnt.ToManaged());
             };
 
             int status = 0;
-            int ret = CS_AddListener(IntPtr.Zero, modCallback, eventMask, immediateNotify ? 1 : 0, ref status);
+            int ret = Interop.CS_AddListener(IntPtr.Zero, modCallback, eventMask, immediateNotify ? 1 : 0, ref status);
             CheckStatus(status);
             s_listenerCallbacks.Add(ret, modCallback);
             return ret;
@@ -679,7 +676,7 @@ namespace CameraServer.Native
         public static void RemoveListener(int handle)
         {
             int status = 0;
-            CS_RemoveListener(handle, ref status);
+            Interop.CS_RemoveListener(handle, ref status);
             CheckStatus(status);
             if (s_listenerCallbacks.ContainsKey(handle))
             {
@@ -689,9 +686,9 @@ namespace CameraServer.Native
 
         public static string GetHostName()
         {
-            var s = CS_GetHostname();
-            string ret = ReadUTF8String(s);
-            CS_FreeString(s);
+            var s = Interop.CS_GetHostname();
+            string ret = Interop.ReadUTF8String(s);
+            Interop.CS_FreeString(s);
             return ret;
         }
 
@@ -699,15 +696,15 @@ namespace CameraServer.Native
         {
             int count = 0;
             int ptrSize = Marshal.SizeOf(typeof(IntPtr));
-            var arr = CS_GetNetworkInterfaces(ref count);
+            var arr = Interop.CS_GetNetworkInterfaces(ref count);
             List<string> interfaces = new List<string>(count);
 
             for (int i = 0; i < count; i++)
             {
                 IntPtr h = new IntPtr(arr.ToInt64() + ptrSize * i);
-                interfaces.Add(ReadUTF8String(h));
+                interfaces.Add(Interop.ReadUTF8String(h));
             }
-            CS_FreeNetworkInterfaces(arr, count);
+            Interop.CS_FreeNetworkInterfaces(arr, count);
             return interfaces;
         }
     }

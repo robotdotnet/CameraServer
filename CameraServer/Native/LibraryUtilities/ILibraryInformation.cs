@@ -1,4 +1,4 @@
-﻿namespace CameraServer.Native.LibraryUtilities
+﻿namespace CSCore.Native.LibraryUtilities
 {
     /// <summary>
     /// Interface for getting information about a loaded native library.

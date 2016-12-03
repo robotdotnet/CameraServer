@@ -1,8 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
-namespace CameraServer.Native.LibraryUtilities
+namespace CSCore.Native.LibraryUtilities
 {
     [ExcludeFromCodeCoverage]
     internal class RoboRioLibraryLoader : ILibraryLoader

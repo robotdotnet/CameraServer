@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CameraServer.Native.LibraryUtilities
+namespace CSCore.Native.LibraryUtilities
 {
     /// <summary>
     /// Specifies that the attributed field should be considered a target for native initialization 

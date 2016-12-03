@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static CameraServer.Native.NativeMethods;
+﻿using CSCore.Native;
 
-namespace CameraServer
+namespace CSCore
 {
     public class VideoEvent
     {
@@ -44,12 +39,12 @@ namespace CameraServer
 
         public VideoSource GetSource()
         {
-            return new VideoSource(CopySource(SourceHandle));
+            return new VideoSource(NativeMethods.CopySource(SourceHandle));
         }
 
         public VideoSink GetSink()
         {
-            return new VideoSink(CopySink(SinkHandle));
+            return new VideoSink(NativeMethods.CopySink(SinkHandle));
         }
 
         public VideoProperty GetProperty()

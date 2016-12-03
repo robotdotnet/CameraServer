@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Linq;
-using CameraServer.Native.LibraryUtilities;
 
-namespace CameraServer.Native.LibraryUtilities
+namespace CSCore.Native.LibraryUtilities
 {
     /// <summary>
     /// This class contains methods to initialize delegates 

@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static CameraServer.Native.NativeMethods;
+﻿using System.Collections.Generic;
+using CSCore.Native;
 
-namespace CameraServer
+namespace CSCore
 {
     public class VideoProperty
     {
         internal int m_handle;
         private PropertyKind m_kind;
 
-        public string Name => GetPropertyName(m_handle);
+        public string Name => NativeMethods.GetPropertyName(m_handle);
 
         public PropertyKind Kind => m_kind;
 
@@ -27,54 +24,54 @@ namespace CameraServer
 
         public int Get()
         {
-            return GetProperty(m_handle);
+            return NativeMethods.GetProperty(m_handle);
         }
 
         public void Set(int value)
         {
-            SetProperty(m_handle, value);
+            NativeMethods.SetProperty(m_handle, value);
         }
 
         public int GetMin()
         {
-            return GetPropertyMin(m_handle);
+            return NativeMethods.GetPropertyMin(m_handle);
         }
 
         public int GetMax()
         {
-            return GetPropertyMax(m_handle);
+            return NativeMethods.GetPropertyMax(m_handle);
         }
 
         public int GetStep()
         {
-            return GetPropertyStep(m_handle);
+            return NativeMethods.GetPropertyStep(m_handle);
         }
 
         public int GetDefault()
         {
-            return GetPropertyDefault(m_handle);
+            return NativeMethods.GetPropertyDefault(m_handle);
         }
 
         // String-specific functions
         public string GetString()
         {
-            return GetStringProperty(m_handle);
+            return NativeMethods.GetStringProperty(m_handle);
         }
 
         public void SetString(string value)
         {
-            SetStringProperty(m_handle, value);
+            NativeMethods.SetStringProperty(m_handle, value);
         }
 
         public List<string> GetChoices()
         {
-            return GetEnumPropertyChoices(m_handle);
+            return NativeMethods.GetEnumPropertyChoices(m_handle);
         }
 
         internal VideoProperty(int handle)
         {
             m_handle = handle;
-            m_kind = GetPropertyKind(m_handle);
+            m_kind = NativeMethods.GetPropertyKind(m_handle);
         }
 
         internal VideoProperty(int handle, PropertyKind kind)

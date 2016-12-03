@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using CameraServer.Native.LibraryUtilities;
 
-namespace CameraServer.Native.LibraryUtilities
+namespace CSCore.Native.LibraryUtilities
 {
     /// <summary>
     /// This class handles loading of a native library

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using CameraServer.Native;
-using static CameraServer.Native.NativeMethods;
+﻿using System.Collections.Generic;
+using CSCore.Native;
 
-namespace CameraServer
+namespace CSCore
 {
     public class USBCamera : VideoSource
     {
@@ -35,12 +30,12 @@ namespace CameraServer
         private VideoProperty m_brValue;
 
         public USBCamera(string name, int dev)
-            : base(CreateUSBCameraDev(name, dev))
+            : base(NativeMethods.CreateUSBCameraDev(name, dev))
         {
         }
 
         public USBCamera(string name, string path)
-            : base(CreateUSBCameraPath(name, path))
+            : base(NativeMethods.CreateUSBCameraPath(name, path))
         {
         }
 
@@ -49,7 +44,7 @@ namespace CameraServer
             return NativeMethods.EnumerateUSBCameras();
         }
 
-        public string Path => GetUSBCameraPath(m_handle);
+        public string Path => NativeMethods.GetUSBCameraPath(m_handle);
 
         public int Brightness
         {

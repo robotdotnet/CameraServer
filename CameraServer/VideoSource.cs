@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using static CameraServer.Native.NativeMethods;
+using CSCore.Native;
 
-namespace CameraServer
+namespace CSCore
 {
     public class VideoSource : IDisposable
     {
@@ -20,7 +17,7 @@ namespace CameraServer
         {
             if (m_handle != 0)
             {
-                ReleaseSource(m_handle);
+                NativeMethods.ReleaseSource(m_handle);
             }
             m_handle = 0;
         }
@@ -40,13 +37,13 @@ namespace CameraServer
 
         public override int GetHashCode() => m_handle;
 
-        public SourceKind Kind => GetSourceKind(m_handle);
+        public SourceKind Kind => NativeMethods.GetSourceKind(m_handle);
 
         public virtual string Name
         {
             get
             {
-                return GetSourceName(m_handle);
+                return NativeMethods.GetSourceName(m_handle);
             }
             set
             {
@@ -58,7 +55,7 @@ namespace CameraServer
         {
             get
             {
-                return GetSourceDescription(m_handle);
+                return NativeMethods.GetSourceDescription(m_handle);
             }
             set
             {
@@ -66,13 +63,13 @@ namespace CameraServer
             }
         }
 
-        public long GetLastFrameTime() => (long)GetSourceLastFrameTime(m_handle);
+        public long GetLastFrameTime() => (long)NativeMethods.GetSourceLastFrameTime(m_handle);
 
         public virtual bool Connected
         {
             get
             {
-                return IsSourceConnected(m_handle);
+                return NativeMethods.IsSourceConnected(m_handle);
             }
             set
             {
@@ -82,12 +79,12 @@ namespace CameraServer
 
         public VideoProperty GetProperty(string name)
         {
-            return new VideoProperty(GetSourceProperty(m_handle, name));
+            return new VideoProperty(NativeMethods.GetSourceProperty(m_handle, name));
         }
 
         public List<VideoProperty> EnumerateProperties()
         {
-            var handles = EnumerateSourceProperties(m_handle);
+            var handles = NativeMethods.EnumerateSourceProperties(m_handle);
             List<VideoProperty> properties = new List<VideoProperty>(handles.Count);
             foreach(var h in handles)
             {
@@ -96,40 +93,40 @@ namespace CameraServer
             return properties;
         }
 
-        public VideoMode GetVideoMode() => GetSourceVideoMode(m_handle);
+        public VideoMode GetVideoMode() => NativeMethods.GetSourceVideoMode(m_handle);
         public bool SetVideoMode(VideoMode mode)
         {
-            return SetSourceVideoMode(m_handle, mode);
+            return NativeMethods.SetSourceVideoMode(m_handle, mode);
         }
 
         public bool SetVideoMode(PixelFormat pixelFormat, int width, int height, int fps)
         {
-            return SetSourceVideoMode(m_handle, pixelFormat, width, height, fps);
+            return NativeMethods.SetSourceVideoMode(m_handle, pixelFormat, width, height, fps);
         }
 
         public bool SetPixelFormat(PixelFormat format)
         {
-            return SetSourcePixelFormat(m_handle, format);
+            return NativeMethods.SetSourcePixelFormat(m_handle, format);
         }
 
         public bool SetResolution(int width, int height)
         {
-            return SetSourceResolution(m_handle, width, height);
+            return NativeMethods.SetSourceResolution(m_handle, width, height);
         }
 
         public bool SetFPS(int fps)
         {
-            return SetSourceFPS(m_handle, fps);
+            return NativeMethods.SetSourceFPS(m_handle, fps);
         }
 
         public List<VideoMode> EnumerateVideoModes()
         {
-            return EnumerateSourceVideoModes(m_handle);
+            return NativeMethods.EnumerateSourceVideoModes(m_handle);
         }
 
         public List<VideoSink> EnumerateSinks()
         {
-            var handles = EnumerateSourceSinks(m_handle);
+            var handles = NativeMethods.EnumerateSourceSinks(m_handle);
             List<VideoSink> sinks = new List<VideoSink>(handles.Count);
             foreach (var h in handles)
             {

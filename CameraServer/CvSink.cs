@@ -1,11 +1,11 @@
 ﻿using OpenCvSharp;
-using static CameraServer.Native.NativeMethods;
+using NativeMethods = CSCore.Native.NativeMethods;
 
-namespace CameraServer
+namespace CSCore
 {
     public class CvSink : VideoSink
     {
-        public CvSink(string name) : base(CreateCvSink(name))
+        public CvSink(string name) : base(NativeMethods.CreateCvSink(name))
         {
 
         }
@@ -14,25 +14,25 @@ namespace CameraServer
         {
             set
             {
-                SetSinkDescription(m_handle, value);
+                NativeMethods.SetSinkDescription(m_handle, value);
             }
         }
 
         public long GrabFrame(Mat image)
         {
-            return (long)GrabSinkFrame(m_handle, image.CvPtr);
+            return (long)NativeMethods.GrabSinkFrame(m_handle, image.CvPtr);
         }
 
         public string GetError()
         {
-            return GetSinkError(m_handle);
+            return NativeMethods.GetSinkError(m_handle);
         }
 
         public bool Enabled
         {
             set
             {
-                SetSinkEnabled(m_handle, value);
+                NativeMethods.SetSinkEnabled(m_handle, value);
             }
         }
     }

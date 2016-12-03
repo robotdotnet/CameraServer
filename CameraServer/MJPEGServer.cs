@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static CameraServer.Native.NativeMethods;
+﻿using CSCore.Native;
 
-namespace CameraServer
+namespace CSCore
 {
     public class MJPEGServer : VideoSink
     {
         public MJPEGServer(string name, string listenAddress, int port) 
-            : base (CreateMJPEGServer(name, listenAddress, port))
+            : base (NativeMethods.CreateMJPEGServer(name, listenAddress, port))
         {
 
         }
@@ -19,7 +15,7 @@ namespace CameraServer
             
         }
 
-        public string ListenAddress => GetMJPEGServerListenAddress(m_handle);
-        public int Port => GetMJPEGServerPort(m_handle);
+        public string ListenAddress => NativeMethods.GetMJPEGServerListenAddress(m_handle);
+        public int Port => NativeMethods.GetMJPEGServerPort(m_handle);
     }
 }

@@ -4,11 +4,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
-using CameraServer.Native.LibraryUtilities;
-using OpenCvSharp;
-using static CameraServer.Native.NativeMethods;
+using CSCore.Native.LibraryUtilities;
 
-namespace CameraServer.Native
+namespace CSCore.Native
 {
     internal class ExcludeFromCodeCoverageAttribute : Attribute
     {
@@ -260,7 +258,7 @@ namespace CameraServer.Native
                                     PropertyKind type, int minimum, int maximum, int step, int defaultValue, int value,
                                     ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_SetSourceEnumPropertyChoicesDelegate(int source, int property, StringWrite[] choices, int count, ref int status);
+        internal delegate void CS_SetSourceEnumPropertyChoicesDelegate(int source, int property, NativeMethods.StringWrite[] choices, int count, ref int status);
 
         //
         // Sink Creation Functions

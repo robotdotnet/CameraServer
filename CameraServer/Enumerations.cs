@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace CameraServer
+namespace CSCore
 {
     public enum StatusValue
     {

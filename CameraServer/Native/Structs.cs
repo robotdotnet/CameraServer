@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using static CameraServer.Native.Interop;
 
-namespace CameraServer.Native
+namespace CSCore.Native
 {
     [StructLayout(LayoutKind.Sequential)]
     internal struct CSEvent
@@ -25,7 +21,7 @@ namespace CameraServer.Native
 
         public VideoEvent ToManaged()
         {
-            return new VideoEvent(kind, source, sink, ReadUTF8String(name), mode.PixelFormat, mode.Width, mode.Height, mode.FPS, property, propertyKind, value, ReadUTF8String(valueStr));
+            return new VideoEvent(kind, source, sink, Interop.ReadUTF8String(name), mode.PixelFormat, mode.Width, mode.Height, mode.FPS, property, propertyKind, value, Interop.ReadUTF8String(valueStr));
         }
     }
 
@@ -38,7 +34,7 @@ namespace CameraServer.Native
 
         internal UsbCameraInfo ToManaged()
         {
-            return  new UsbCameraInfo(dev, ReadUTF8String(path), ReadUTF8String(name));
+            return  new UsbCameraInfo(dev, Interop.ReadUTF8String(path), Interop.ReadUTF8String(name));
         }
     }
 }

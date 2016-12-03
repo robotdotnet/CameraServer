@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static CameraServer.Native.NativeMethods;
+﻿using CSCore.Native;
 
-namespace CameraServer
+namespace CSCore
 {
     public class HTTPCamera : VideoSource
     {
-        public HTTPCamera(string name, string url) : base(CreateHTTPCamera(name, url))
+        public HTTPCamera(string name, string url) : base(NativeMethods.CreateHTTPCamera(name, url))
         {
 
         }

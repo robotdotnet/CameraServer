@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CameraServer.Native.LibraryUtilities
+namespace CSCore.Native.LibraryUtilities
 {
     /// <summary>
     /// Interface for platform specific native interface to the library

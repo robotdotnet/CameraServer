@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using static CameraServer.Native.NativeMethods;
+using CSCore.Native;
 
-namespace CameraServer
+namespace CSCore
 {
     public class VideoSink : IDisposable
     {
@@ -24,7 +21,7 @@ namespace CameraServer
         {
             if (m_handle != 0)
             {
-                ReleaseSink(m_handle);
+                NativeMethods.ReleaseSink(m_handle);
             }
             m_handle = 0;
         }
@@ -43,13 +40,13 @@ namespace CameraServer
             return m_handle;
         }
 
-        public SinkKind Kind => GetSinkKind(m_handle);
+        public SinkKind Kind => NativeMethods.GetSinkKind(m_handle);
 
         public virtual string Name
         {
             get
             {
-                return GetSinkName(m_handle);
+                return NativeMethods.GetSinkName(m_handle);
             }
             set
             {
@@ -61,7 +58,7 @@ namespace CameraServer
         {
             get
             {
-                return GetSinkDescription(m_handle);
+                return NativeMethods.GetSinkDescription(m_handle);
             }
             set
             {
@@ -73,17 +70,17 @@ namespace CameraServer
         {
             get
             {
-                return new VideoSource(GetSinkSource(m_handle));
+                return new VideoSource(NativeMethods.GetSinkSource(m_handle));
             }
             set
             {
-                SetSinkSource(m_handle, value.Handle);
+                NativeMethods.SetSinkSource(m_handle, value.Handle);
             }
         }
 
         public VideoProperty GetSourceProperty(string name)
         {
-            return new VideoProperty(GetSinkSourceProperty(m_handle, name));
+            return new VideoProperty(NativeMethods.GetSinkSourceProperty(m_handle, name));
         }
 
         public static List<VideoSink> EnumerateSinks()

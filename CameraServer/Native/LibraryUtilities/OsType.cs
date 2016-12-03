@@ -1,4 +1,4 @@
-﻿namespace CameraServer.Native.LibraryUtilities
+﻿namespace CSCore.Native.LibraryUtilities
 {
     /// <summary>
     /// Enumeration of the OS type for this system.

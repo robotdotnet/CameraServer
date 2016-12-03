@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 // ReSharper disable InconsistentNaming
 
-namespace CameraServer.Native.LibraryUtilities
+namespace CSCore.Native.LibraryUtilities
 {
     [ExcludeFromCodeCoverage]
     internal sealed class Utsname

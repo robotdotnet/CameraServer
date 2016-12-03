@@ -7,7 +7,7 @@
     <ProjectGuid>{9C1965CB-F7A4-4581-94F6-B3F7D88FAA9D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CameraServer</RootNamespace>
+    <RootNamespace>CSCore</RootNamespace>
     <AssemblyName>CameraServer</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
