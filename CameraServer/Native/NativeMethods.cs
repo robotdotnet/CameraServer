@@ -685,5 +685,28 @@ namespace CameraServer.Native
                 s_listenerCallbacks.Remove(handle);
             }
         }
+
+        public static string GetHostName()
+        {
+            var s = CS_GetHostname();
+            string ret = ReadUTF8String(s);
+            CS_FreeString(s);
+            return ret;
+        }
+
+        public static List<string> GetNetworkInterfaces()
+        {
+            int count = 0;
+            var arr = CS_GetNetworkInterfaces(ref count);
+            List<string> interfaces = new List<string>(count);
+
+            for (int i = 0; i < count; i++)
+            {
+                IntPtr h = Marshal.ReadIntPtr(arr, i);
+                interfaces.Add(ReadUTF8String(h));
+            }
+            CS_FreeNetworkInterfaces(arr, count);
+            return interfaces;
+        }
     }
 }

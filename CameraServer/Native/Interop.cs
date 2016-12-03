@@ -494,6 +494,10 @@ namespace CameraServer.Native
         [NativeDelegate]
         internal static CS_RemoveListenerDelegate CS_RemoveListener;
 
+        [NativeDelegate] internal static CS_GetHostnameDelegate CS_GetHostname;
+        [NativeDelegate] internal static CS_GetNetworkInterfacesDelegate CS_GetNetworkInterfaces;
+        [NativeDelegate] internal static CS_FreeNetworkInterfacesDelegate CS_FreeNetworkInterfaces;
+
         internal static byte[] CreateUTF8String(string str, out UIntPtr size)
         {
             var bytes = Encoding.UTF8.GetByteCount(str);
