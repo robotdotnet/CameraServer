@@ -441,13 +441,14 @@ namespace CameraServer.Native
         {
             int status = 0;
             int count = 0;
+            int ptrSize = Marshal.SizeOf(typeof(IntPtr));
             IntPtr choicesArray = CS_GetEnumPropertyChoices(handle, ref count, ref status);
             CheckStatus(status);
             List<string> choices = new List<string>(count);
 
             for (int i = 0; i < count; i++)
             {
-                IntPtr h = Marshal.ReadIntPtr(choicesArray, i);
+                IntPtr h = new IntPtr(choicesArray.ToInt64() + ptrSize * i);
                 choices.Add(ReadUTF8String(h));
             }
             CS_FreeEnumPropertyChoices(choicesArray, count);
@@ -697,12 +698,13 @@ namespace CameraServer.Native
         public static List<string> GetNetworkInterfaces()
         {
             int count = 0;
+            int ptrSize = Marshal.SizeOf(typeof(IntPtr));
             var arr = CS_GetNetworkInterfaces(ref count);
             List<string> interfaces = new List<string>(count);
 
             for (int i = 0; i < count; i++)
             {
-                IntPtr h = Marshal.ReadIntPtr(arr, i);
+                IntPtr h = new IntPtr(arr.ToInt64() + ptrSize * i);
                 interfaces.Add(ReadUTF8String(h));
             }
             CS_FreeNetworkInterfaces(arr, count);
