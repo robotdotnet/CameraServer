@@ -62,8 +62,8 @@ namespace CameraServer
         SourcePropertyValueUpdated = 0x0080,
         SourcePropertyChoicesUpdated = 0x0100,
         SinkSourceChanged = 0x0200,
-        SinkSourceCreated = 0x0400,
-        SinkSourceDestroyed = 0x0800,
+        SinkCreated = 0x0400,
+        SinkDestroyed = 0x0800,
         SinkEnabled = 0x1000,
         SinkDisabled = 0x2000,
         NetworkInterfacesChanged = 0x4000
