@@ -36,7 +36,7 @@ namespace CSCore
         Unknown = 0,
         Usb = 1,
         Http = 2,
-        CV = 3,
+        CV = 4,
     }
 
     public enum SinkKind
