@@ -4,10 +4,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
-using CameraServer.Native.LibraryUtilities;
-using Emgu.CV.Structure;
+using OpenCvSharp.PInvoke.NativeLibraryUtilities;
 
-namespace CameraServer.Native
+namespace CSCore.Native
 {
     internal class ExcludeFromCodeCoverageAttribute : Attribute
     {
@@ -59,6 +58,7 @@ namespace CameraServer.Native
         {
             if (!s_libraryLoaded)
             {
+                bool usingOpenCvLibrary = false;
                 try
                 {
                     finalizeInterop.Ping();
@@ -66,7 +66,7 @@ namespace CameraServer.Native
                     foreach (var commandArg in commandArgs)
                     {
                         //search for a line with the prefix "-cameraserver:"
-                        if (commandArg.ToLower().Contains("-cameraserver:"))
+                        if (commandArg.ToLower().Contains("-cscore:"))
                         {
                             //Split line to get the library.
                             int splitLoc = commandArg.IndexOf(':');
@@ -81,38 +81,33 @@ namespace CameraServer.Native
                         }
                     }
 
-                    const string resourceRoot = "CameraServer.Native.Libraries.";
 
-                    if (s_useCommandLineFile)
-                    {
-                        NativeLoader = new NativeLibraryLoader();
-                        NativeLoader.LoadNativeLibrary<Interop>(s_libraryLocation, true);
-                    }
-                    else if (File.Exists("/usr/local/frc/bin/frcRunRobot.sh"))
+                    if (File.Exists("/usr/local/frc/bin/frcRunRobot.sh"))
                     {
                         NativeLoader = new NativeLibraryLoader();
                         // RoboRIO
-                        NativeLoader.LoadNativeLibrary<Interop>(new RoboRioLibraryLoader(), resourceRoot + "roborio.libcameraserver.so");
-                        s_libraryLocation = NativeLoader.LibraryLocation;
+                        if (s_useCommandLineFile)
+                        {
+                            NativeLoader.LoadNativeLibrary<Interop>(new RoboRioLibraryLoader(), s_libraryLocation, true);
+                        }
+                        else
+                        {
+                            NativeLoader.LoadNativeLibrary<Interop>(new RoboRioLibraryLoader(), "libcscore.so", true);
+                            s_libraryLocation = NativeLoader.LibraryLocation;
+                        }
                     }
                     else
                     {
-                        NativeLoader = new NativeLibraryLoader();
-                        NativeLoader.AddLibraryLocation(OsType.Windows32,
-                            resourceRoot + "x86.cameraserver.dll");
-                        NativeLoader.AddLibraryLocation(OsType.Windows64,
-                            resourceRoot + "amd64.cameraserver.dll");
-                        NativeLoader.AddLibraryLocation(OsType.Linux32,
-                            resourceRoot + "x86.libcameraserver.so");
-                        NativeLoader.AddLibraryLocation(OsType.Linux64,
-                            resourceRoot + "amd64.libcameraserver.so");
-                        NativeLoader.AddLibraryLocation(OsType.MacOs32,
-                            resourceRoot + "x86.libcameraserver.dylib");
-                        NativeLoader.AddLibraryLocation(OsType.MacOs64,
-                            resourceRoot + "amd64.libcameraserver.dylib");
-
-                        NativeLoader.LoadNativeLibrary<Interop>();
-                        s_libraryLocation = NativeLoader.LibraryLocation;
+                        if (s_useCommandLineFile)
+                        {
+                            NativeLoader.LoadNativeLibrary<Interop>(s_libraryLocation, true);
+                        }
+                        else
+                        {
+                            usingOpenCvLibrary = true;
+                            NativeLoader = OpenCvSharp.NativeMethods.NativeLoader;
+                            s_libraryLocation = NativeLoader.LibraryLocation;
+                        }
                     }
 
                     NativeDelegateInitializer.SetupNativeDelegates<Interop>(NativeLoader);
@@ -123,21 +118,21 @@ namespace CameraServer.Native
                     Console.WriteLine(e.StackTrace);
                     Environment.Exit(1);
                 }
-                s_runFinalizer = true;
+                s_runFinalizer = !usingOpenCvLibrary;
                 s_libraryLoaded = true;
             }
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_OnChange(IntPtr data, int property);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_ProcessFrame(IntPtr data, ulong time);
 
-
-
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate PropertyType CS_GetPropertyTypeDelegate(int property, ref int status);
+        internal delegate void CS_ListenerCallback(IntPtr data, ref CSEvent evnt);
+
+
+        // Property Functions
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate PropertyKind CS_GetPropertyKindDelegate(int property, ref int status);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_GetPropertyNameDelegate(int property, ref int status);
@@ -169,27 +164,30 @@ namespace CameraServer.Native
         // Source Creation Functions
         //
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_CreateUSBSourceDevDelegate(byte[] name, int dev, ref int status);
+        internal delegate int CS_CreateUSBCameraDevDelegate(byte[] name, int dev, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_CreateUSBSourcePathDelegate(byte[] name, byte[] path,
+        internal delegate int CS_CreateUSBCameraPathDelegate(byte[] name, byte[] path,
                                          ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_CreateHTTPSourceDelegate(byte[] name, byte[] url,
+        internal delegate int CS_CreateHTTPCameraDelegate(byte[] name, byte[] url,
                                       ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_CreateCvSourceDelegate(byte[] name, ref int status);
+        internal delegate int CS_CreateCvSourceDelegate(byte[] name, ref VideoMode mode, ref int status);
 
         //
         // Source Functions
         //
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate SourceKind CS_GetSourceKindDelegate(int source, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_GetSourceNameDelegate(int source, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_GetSourceDescriptionDelegate(int source, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate ulong CS_GetSourceLastFrameTimeDelegate(int source, ref int status);
-        [return: MarshalAs(UnmanagedType.Bool)]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
         internal delegate bool CS_IsSourceConnectedDelegate(int source, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate int CS_GetSourcePropertyDelegate(int source, byte[] name,
@@ -198,15 +196,40 @@ namespace CameraServer.Native
         internal delegate IntPtr CS_EnumerateSourcePropertiesDelegate(int source, ref int count,
                                                   ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_GetSourceVideoModeDelegate(int source, ref VideoMode mode, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal delegate bool CS_SetSourceVideoModeDelegate(int source, ref VideoMode mode, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal delegate bool CS_SetSourceVideoModeDiscreteDelegate(int source, PixelFormat pixelFormat, int width, int height, int fps, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal delegate bool CS_SetSourcePixelFormatDelegate(int source, PixelFormat pixelFormat, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal delegate bool CS_SetSourceResolutionDelegate(int source, int width, int height, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal delegate bool CS_SetSourceFPSDelegate(int source, int fps, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate IntPtr CS_EnumerateSourceVideoModesDelegate(int source, ref int count, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate IntPtr CS_EnumerateSourceSinksDelegate(int source, ref int count, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate int CS_CopySourceDelegate(int source, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_ReleaseSourceDelegate(int source, ref int status);
+
+        // USBCameraSourceFunctions
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate IntPtr CS_GetUSBCameraPathDelegate(int source, ref int status);
 
         //
         // OpenCV Source Functions
         //
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_PutSourceFrameDelegate(int source, ref MCvMat image,
+        internal delegate void CS_PutSourceFrameCppDelegate(int source, IntPtr image,
                        ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_NotifySourceErrorDelegate(int source, byte[] msg, ref int status);
@@ -214,25 +237,19 @@ namespace CameraServer.Native
         internal delegate void CS_SetSourceConnectedDelegate(int source, [MarshalAs(UnmanagedType.Bool)]bool connected,
                                    ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_SetSourceDescriptionDelegate(int source, byte[] description, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate int CS_CreateSourcePropertyDelegate(int source, byte[] name,
-                                    PropertyType type,
+                                    PropertyKind type, int minimum, int maximum, int step, int defaultValue, int value,
                                     ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_CreateSourcePropertyCallbackDelegate(
-            int source, byte[] name, PropertyType type, IntPtr data,
-            CS_OnChange onChange, ref int status);
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_RemoveSourcePropertyDelegate(int source, int property,
-                                     ref int status);
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_RemoveSourcePropertyByNameDelegate(int source, byte[] name,
-                                           ref int status);
+        internal delegate void CS_SetSourceEnumPropertyChoicesDelegate(int source, int property, NativeMethods.StringWrite[] choices, int count, ref int status);
 
         //
         // Sink Creation Functions
         //
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_CreateHTTPSinkDelegate(byte[] name, byte[] listenAddress, int port,
+        internal delegate int CS_CreateMJPEGServerDelegate(byte[] name, byte[] listenAddress, int port,
                                   ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate int CS_CreateCvSinkDelegate(byte[] name, ref int status);
@@ -244,6 +261,8 @@ namespace CameraServer.Native
         //
         // Sink Functions
         //
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate SinkKind CS_GetSinkKindDelegate(int sink, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_GetSinkNameDelegate(int sink, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -260,35 +279,30 @@ namespace CameraServer.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_ReleaseSinkDelegate(int sink, ref int status);
 
+        // MJPEGServer Sink Functions
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate IntPtr CS_GetMJPEGServerListenAddressDelegate(int sink, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate int CS_GetMJPEGServerPortDelegate(int sink, ref int status);
+
+
         //
         // OpenCV Sink Functions
         //
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate ulong CS_GrabSinkFrameDelegate(int sink, ref MCvMat image, ref int status);
+        internal delegate void CS_SetSinkDescriptionDelegate(int sink, byte[] description, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate ulong CS_GrabSinkFrameCppDelegate(int sink, IntPtr image, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_GetSinkErrorDelegate(int sink, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_SetSinkEnabledDelegate(int sink, [MarshalAs(UnmanagedType.Bool)]bool enabled, ref int status);
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void SourceListenerCallback(IntPtr data, IntPtr name, int source, int sourceEvent);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_AddSourceListenerDelegate(
-            IntPtr data, SourceListenerCallback callback, int eventMask, ref int status);
-
+        internal delegate int CS_AddListenerDelegate(IntPtr data, CS_ListenerCallback callback, int eventMask, int immediateNotify, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_RemoveSourceListenerDelegate(int handle, ref int status);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void SinkListenerCallback(IntPtr data, IntPtr name, int sink, int sinkEvent);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_AddSinkListenerDelegate(
-            IntPtr data, SinkListenerCallback callback, int eventMask, ref int status);
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_RemoveSinkListenerDelegate(int handle, ref int status);
+        internal delegate void CS_RemoveListenerDelegate(int handle, ref int status);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_EnumerateUSBCamerasDelegate(ref int count, ref int status);
@@ -307,15 +321,29 @@ namespace CameraServer.Native
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_ReleaseEnumeratedSinksDelegate(IntPtr sinks, int count);
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_FreeStringDelegate(IntPtr str);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_FreeEnumPropertyChoicesDelegate(IntPtr choices, int count);
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_FreeEnumeratedPropertiesDelegate(IntPtr properties, int count);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_FreeEnumeratedVideoModesDelegate(IntPtr properties, int count);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate IntPtr CS_GetHostnameDelegate();
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate IntPtr CS_GetNetworkInterfacesDelegate(ref int count);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_FreeNetworkInterfacesDelegate(IntPtr interfaces, int count);
+
         [NativeDelegate]
-        internal static CS_GetPropertyTypeDelegate CS_GetPropertyType;
+        internal static CS_GetPropertyKindDelegate CS_GetPropertyKind;
         [NativeDelegate]
         internal static CS_GetPropertyNameDelegate CS_GetPropertyName;
         [NativeDelegate]
@@ -337,11 +365,11 @@ namespace CameraServer.Native
         [NativeDelegate]
         internal static CS_GetEnumPropertyChoicesDelegate CS_GetEnumPropertyChoices;
         [NativeDelegate]
-        internal static CS_CreateUSBSourceDevDelegate CS_CreateUSBSourceDev;
+        internal static CS_CreateUSBCameraDevDelegate CS_CreateUSBCameraDev;
         [NativeDelegate]
-        internal static CS_CreateUSBSourcePathDelegate CS_CreateUSBSourcePath;
+        internal static CS_CreateUSBCameraPathDelegate CS_CreateUSBCameraPath;
         [NativeDelegate]
-        internal static CS_CreateHTTPSourceDelegate CS_CreateHTTPSource;
+        internal static CS_CreateHTTPCameraDelegate CS_CreateHTTPCamera;
         [NativeDelegate]
         internal static CS_CreateCvSourceDelegate CS_CreateCvSource;
         [NativeDelegate]
@@ -361,21 +389,13 @@ namespace CameraServer.Native
         [NativeDelegate]
         internal static CS_ReleaseSourceDelegate CS_ReleaseSource;
         [NativeDelegate]
-        internal static CS_PutSourceFrameDelegate CS_PutSourceFrame;
+        internal static CS_PutSourceFrameCppDelegate CS_PutSourceFrameCpp;
         [NativeDelegate]
         internal static CS_NotifySourceErrorDelegate CS_NotifySourceError;
         [NativeDelegate]
         internal static CS_SetSourceConnectedDelegate CS_SetSourceConnected;
         [NativeDelegate]
         internal static CS_CreateSourcePropertyDelegate CS_CreateSourceProperty;
-        [NativeDelegate]
-        internal static CS_CreateSourcePropertyCallbackDelegate CS_CreateSourcePropertyCallback;
-        [NativeDelegate]
-        internal static CS_RemoveSourcePropertyDelegate CS_RemoveSourceProperty;
-        [NativeDelegate]
-        internal static CS_RemoveSourcePropertyByNameDelegate CS_RemoveSourcePropertyByName;
-        [NativeDelegate]
-        internal static CS_CreateHTTPSinkDelegate CS_CreateHTTPSink;
         [NativeDelegate]
         internal static CS_CreateCvSinkDelegate CS_CreateCvSink;
         [NativeDelegate]
@@ -395,19 +415,11 @@ namespace CameraServer.Native
         [NativeDelegate]
         internal static CS_ReleaseSinkDelegate CS_ReleaseSink;
         [NativeDelegate]
-        internal static CS_GrabSinkFrameDelegate CS_GrabSinkFrame;
+        internal static CS_GrabSinkFrameCppDelegate CS_GrabSinkFrameCpp;
         [NativeDelegate]
         internal static CS_GetSinkErrorDelegate CS_GetSinkError;
         [NativeDelegate]
         internal static CS_SetSinkEnabledDelegate CS_SetSinkEnabled;
-        [NativeDelegate]
-        internal static CS_AddSourceListenerDelegate CS_AddSourceListener;
-        [NativeDelegate]
-        internal static CS_RemoveSourceListenerDelegate CS_RemoveSourceListener;
-        [NativeDelegate]
-        internal static CS_AddSinkListenerDelegate CS_AddSinkListener;
-        [NativeDelegate]
-        internal static CS_RemoveSinkListenerDelegate CS_RemoteSinkListener;
         [NativeDelegate]
         internal static CS_EnumerateUSBCamerasDelegate CS_EnumerateUSBCameras;
         [NativeDelegate]
@@ -426,6 +438,48 @@ namespace CameraServer.Native
         internal static CS_FreeEnumPropertyChoicesDelegate CS_FreeEnumPropertyChoices;
         [NativeDelegate]
         internal static CS_FreeEnumeratedPropertiesDelegate CS_FreeEnumeratedProperties;
+        [NativeDelegate]
+        internal static CS_SetSinkDescriptionDelegate CS_SetSinkDescription;
+        [NativeDelegate]
+        internal static CS_GetSinkKindDelegate CS_GetSinkKind;
+        [NativeDelegate]
+        internal static CS_GetSourceKindDelegate CS_GetSourceKind;
+        [NativeDelegate]
+        internal static CS_GetSourceVideoModeDelegate CS_GetSourceVideoMode;
+        [NativeDelegate]
+        internal static CS_SetSourceVideoModeDiscreteDelegate CS_SetSourceVideoModeDiscrete;
+        [NativeDelegate]
+        internal static CS_SetSourcePixelFormatDelegate CS_SetSourcePixelFormat;
+        [NativeDelegate]
+        internal static CS_SetSourceResolutionDelegate CS_SetSourceResolution;
+        [NativeDelegate]
+        internal static CS_SetSourceFPSDelegate CS_SetSourceFPS;
+        [NativeDelegate]
+        internal static CS_EnumerateSourceVideoModesDelegate CS_EnumerateSourceVideoModes;
+        [NativeDelegate]
+        internal static CS_EnumerateSourceSinksDelegate CS_EnumerateSourceSinks;
+        [NativeDelegate]
+        internal static CS_FreeEnumeratedVideoModesDelegate CS_FreeEnumeratedVideoModes;
+        [NativeDelegate]
+        internal static CS_SetSourceDescriptionDelegate CS_SetSourceDescription;
+        [NativeDelegate]
+        internal static CS_SetSourceEnumPropertyChoicesDelegate CS_SetSourceEnumPropertyChoices;
+        [NativeDelegate]
+        internal static CS_CreateMJPEGServerDelegate CS_CreateMJPEGServer;
+        [NativeDelegate]
+        internal static CS_GetMJPEGServerListenAddressDelegate CS_GetMJPEGServerListenAddress;
+        [NativeDelegate]
+        internal static CS_GetMJPEGServerPortDelegate CS_GetMJPEGServerPort;
+        [NativeDelegate]
+        internal static CS_GetUSBCameraPathDelegate CS_GetUSBCameraPath;
+        [NativeDelegate]
+        internal static CS_AddListenerDelegate CS_AddListener;
+        [NativeDelegate]
+        internal static CS_RemoveListenerDelegate CS_RemoveListener;
+
+        [NativeDelegate] internal static CS_GetHostnameDelegate CS_GetHostname;
+        [NativeDelegate] internal static CS_GetNetworkInterfacesDelegate CS_GetNetworkInterfaces;
+        [NativeDelegate] internal static CS_FreeNetworkInterfacesDelegate CS_FreeNetworkInterfaces;
 
         internal static byte[] CreateUTF8String(string str, out UIntPtr size)
         {
@@ -452,20 +506,6 @@ namespace CameraServer.Native
                 data.Add(ch);
             }
             return Encoding.UTF8.GetString(data.ToArray());
-        }
-
-        internal static IReadOnlyList<string> ReadStringArrayFromPtr(IntPtr ptr, int size)
-        {
-#pragma warning disable CS0618
-            int ptrSize = Marshal.SizeOf(typeof(IntPtr));
-#pragma warning restore CS0618
-            List<string> strList = new List<string>(size);
-            for (int i = 0; i < size; i++)
-            {
-                IntPtr stringStart = new IntPtr(ptr.ToInt64() + ptrSize * i);
-                strList.Add(ReadUTF8String(stringStart));
-            }
-            return strList;
         }
     }
 }

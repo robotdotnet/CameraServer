@@ -1,0 +1,43 @@
+{
+  "version": "0.9.3-local-*",
+  "title": "FRC CameraServer",
+  "description": "CameraServer libraries built for FRC using the cscore library",
+  "copyright": "Copyright 2016 RobotDotNet",
+  "authors": [
+    "RobotDotNet"
+  ],
+  "packOptions": {
+    "owners": [
+      "RobotDotNet"
+    ],
+    "authors": [
+      "RobotDotNet"
+    ],
+    "id": "FRC.CameraServer",
+    "tags": [ "WPILib", "FRC", "FIRST", "RoboRio" ],
+    "title": "FRC CameraServer",
+    "requireLicenseAcceptance": false,
+    "projectUrl": "https://github.com/robotdotnet/CameraServer",
+    "summary": "CameraServer libraries built for FRC using the cscore library",
+    "licenseUrl": "https://github.com/robotdotnet/CameraServer/blob/master/LICENSE.txt",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/robotdotnet/CameraServer"
+    }
+  },
+  "buildOptions": {
+    "xmlDoc": true
+  },
+  "frameworks": {
+    "net45": {
+    }
+  },
+  "configurations": {
+    "Debug": {
+      "define": [ "DEBUG" ]
+    }
+  },
+  "dependencies": {
+    "FRC.OpenCvSharp": "0.9.3-beta3"
+  }
+}
