@@ -17,7 +17,7 @@ namespace CSCore
     public enum PixelFormat
     {
         Unknown = 0,
-        MJPEG,
+        Mjpeg,
         YUYV,
         RGB565
     }
@@ -34,15 +34,15 @@ namespace CSCore
     public enum SourceKind
     {
         Unknown = 0,
-        USB = 1,
-        HTTP = 2,
+        Usb = 1,
+        Http = 2,
         CV = 3,
     }
 
     public enum SinkKind
     {
         Unknown = 0,
-        MJPEG = 2,
+        Mjpeg = 2,
         CV = 4
     }
 

@@ -26,7 +26,7 @@ namespace CSCore.Native
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct CSUSBCameraInfo
+    internal struct CSUsbCameraInfo
     {
         private int dev;
         private IntPtr path;

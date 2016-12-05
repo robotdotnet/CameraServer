@@ -17,9 +17,9 @@
     "tags": [ "WPILib", "FRC", "FIRST", "RoboRio" ],
     "title": "FRC CameraServer",
     "requireLicenseAcceptance": false,
-    "projectUrl": "https://github.com/robotdotnet/CameraServer",
+    "projectUrl": "Https://github.com/robotdotnet/CameraServer",
     "summary": "CameraServer libraries built for FRC using the cscore library",
-    "licenseUrl": "https://github.com/robotdotnet/CameraServer/blob/master/LICENSE.txt",
+    "licenseUrl": "Https://github.com/robotdotnet/CameraServer/blob/master/LICENSE.txt",
     "repository": {
       "type": "git",
       "url": "git://github.com/robotdotnet/CameraServer"

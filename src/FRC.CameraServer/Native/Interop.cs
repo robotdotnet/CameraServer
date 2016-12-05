@@ -164,12 +164,12 @@ namespace CSCore.Native
         // Source Creation Functions
         //
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_CreateUSBCameraDevDelegate(byte[] name, int dev, ref int status);
+        internal delegate int CS_CreateUsbCameraDevDelegate(byte[] name, int dev, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_CreateUSBCameraPathDelegate(byte[] name, byte[] path,
+        internal delegate int CS_CreateUsbCameraPathDelegate(byte[] name, byte[] path,
                                          ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_CreateHTTPCameraDelegate(byte[] name, byte[] url,
+        internal delegate int CS_CreateHttpCameraDelegate(byte[] name, byte[] url,
                                       ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate int CS_CreateCvSourceDelegate(byte[] name, ref VideoMode mode, ref int status);
@@ -221,9 +221,9 @@ namespace CSCore.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_ReleaseSourceDelegate(int source, ref int status);
 
-        // USBCameraSourceFunctions
+        // UsbCameraSourceFunctions
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate IntPtr CS_GetUSBCameraPathDelegate(int source, ref int status);
+        internal delegate IntPtr CS_GetUsbCameraPathDelegate(int source, ref int status);
 
         //
         // OpenCV Source Functions
@@ -249,7 +249,7 @@ namespace CSCore.Native
         // Sink Creation Functions
         //
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_CreateMJPEGServerDelegate(byte[] name, byte[] listenAddress, int port,
+        internal delegate int CS_CreateMjpegServerDelegate(byte[] name, byte[] listenAddress, int port,
                                   ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate int CS_CreateCvSinkDelegate(byte[] name, ref int status);
@@ -279,11 +279,11 @@ namespace CSCore.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_ReleaseSinkDelegate(int sink, ref int status);
 
-        // MJPEGServer Sink Functions
+        // MjpegServer Sink Functions
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate IntPtr CS_GetMJPEGServerListenAddressDelegate(int sink, ref int status);
+        internal delegate IntPtr CS_GetMjpegServerListenAddressDelegate(int sink, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_GetMJPEGServerPortDelegate(int sink, ref int status);
+        internal delegate int CS_GetMjpegServerPortDelegate(int sink, ref int status);
 
 
         //
@@ -305,10 +305,10 @@ namespace CSCore.Native
         internal delegate void CS_RemoveListenerDelegate(int handle, ref int status);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate IntPtr CS_EnumerateUSBCamerasDelegate(ref int count, ref int status);
+        internal delegate IntPtr CS_EnumerateUsbCamerasDelegate(ref int count, ref int status);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void CS_FreeEnumeratedUSBCamerasDelegate(IntPtr cameras, int count);
+        internal delegate void CS_FreeEnumeratedUsbCamerasDelegate(IntPtr cameras, int count);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_EnumerateSourcesDelegate(ref int count, ref int status);
@@ -365,11 +365,11 @@ namespace CSCore.Native
         [NativeDelegate]
         internal static CS_GetEnumPropertyChoicesDelegate CS_GetEnumPropertyChoices;
         [NativeDelegate]
-        internal static CS_CreateUSBCameraDevDelegate CS_CreateUSBCameraDev;
+        internal static CS_CreateUsbCameraDevDelegate CS_CreateUsbCameraDev;
         [NativeDelegate]
-        internal static CS_CreateUSBCameraPathDelegate CS_CreateUSBCameraPath;
+        internal static CS_CreateUsbCameraPathDelegate CS_CreateUsbCameraPath;
         [NativeDelegate]
-        internal static CS_CreateHTTPCameraDelegate CS_CreateHTTPCamera;
+        internal static CS_CreateHttpCameraDelegate CS_CreateHttpCamera;
         [NativeDelegate]
         internal static CS_CreateCvSourceDelegate CS_CreateCvSource;
         [NativeDelegate]
@@ -421,9 +421,9 @@ namespace CSCore.Native
         [NativeDelegate]
         internal static CS_SetSinkEnabledDelegate CS_SetSinkEnabled;
         [NativeDelegate]
-        internal static CS_EnumerateUSBCamerasDelegate CS_EnumerateUSBCameras;
+        internal static CS_EnumerateUsbCamerasDelegate CS_EnumerateUsbCameras;
         [NativeDelegate]
-        internal static CS_FreeEnumeratedUSBCamerasDelegate CS_FreeEnumeratedUSBCameras;
+        internal static CS_FreeEnumeratedUsbCamerasDelegate CS_FreeEnumeratedUsbCameras;
         [NativeDelegate]
         internal static CS_EnumerateSourcesDelegate CS_EnumerateSources;
         [NativeDelegate]
@@ -465,13 +465,13 @@ namespace CSCore.Native
         [NativeDelegate]
         internal static CS_SetSourceEnumPropertyChoicesDelegate CS_SetSourceEnumPropertyChoices;
         [NativeDelegate]
-        internal static CS_CreateMJPEGServerDelegate CS_CreateMJPEGServer;
+        internal static CS_CreateMjpegServerDelegate CS_CreateMjpegServer;
         [NativeDelegate]
-        internal static CS_GetMJPEGServerListenAddressDelegate CS_GetMJPEGServerListenAddress;
+        internal static CS_GetMjpegServerListenAddressDelegate CS_GetMjpegServerListenAddress;
         [NativeDelegate]
-        internal static CS_GetMJPEGServerPortDelegate CS_GetMJPEGServerPort;
+        internal static CS_GetMjpegServerPortDelegate CS_GetMjpegServerPort;
         [NativeDelegate]
-        internal static CS_GetUSBCameraPathDelegate CS_GetUSBCameraPath;
+        internal static CS_GetUsbCameraPathDelegate CS_GetUsbCameraPath;
         [NativeDelegate]
         internal static CS_AddListenerDelegate CS_AddListener;
         [NativeDelegate]

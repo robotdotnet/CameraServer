@@ -549,61 +549,61 @@ namespace CSCore.Native
             }
         }
 
-        public static int CreateMJPEGServer(string name, string listenAddress, int port)
+        public static int CreateMjpegServer(string name, string listenAddress, int port)
         {
             UIntPtr size;
             byte[] nStr = Interop.CreateUTF8String(name, out size);
             byte[] aStr = Interop.CreateUTF8String(listenAddress, out size);
             int status = 0;
-            int ret = Interop.CS_CreateMJPEGServer(nStr, aStr, port, ref status);
+            int ret = Interop.CS_CreateMjpegServer(nStr, aStr, port, ref status);
             CheckStatus(status);
             return ret;
         }
 
-        public static string GetMJPEGServerListenAddress(int handle)
+        public static string GetMjpegServerListenAddress(int handle)
         {
             int status = 0;
-            IntPtr ret = Interop.CS_GetMJPEGServerListenAddress(handle, ref status);
+            IntPtr ret = Interop.CS_GetMjpegServerListenAddress(handle, ref status);
             CheckStatus(status);
             string sRet = Interop.ReadUTF8String(ret);
             Interop.CS_FreeString(ret);
             return sRet;
         }
 
-        public static int GetMJPEGServerPort(int handle)
+        public static int GetMjpegServerPort(int handle)
         {
             int status = 0;
-            int ret = Interop.CS_GetMJPEGServerPort(handle, ref status);
+            int ret = Interop.CS_GetMjpegServerPort(handle, ref status);
             CheckStatus(status);
             return ret;
         }
 
-        public static int CreateUSBCameraDev(string name, int dev)
+        public static int CreateUsbCameraDev(string name, int dev)
         {
             UIntPtr size;
             byte[] nStr = Interop.CreateUTF8String(name, out size);
             int status = 0;
-            int ret = Interop.CS_CreateUSBCameraDev(nStr, dev, ref status);
+            int ret = Interop.CS_CreateUsbCameraDev(nStr, dev, ref status);
             CheckStatus(status);
             return ret;
         }
 
-        public static int CreateUSBCameraPath(string name, string path)
+        public static int CreateUsbCameraPath(string name, string path)
         {
             UIntPtr size;
             byte[] nStr = Interop.CreateUTF8String(name, out size);
             byte[] pStr = Interop.CreateUTF8String(path, out size);
             int status = 0;
-            int ret = Interop.CS_CreateUSBCameraPath(nStr, pStr, ref status);
+            int ret = Interop.CS_CreateUsbCameraPath(nStr, pStr, ref status);
             CheckStatus(status);
             return ret;
         }
 
-        public static List<UsbCameraInfo> EnumerateUSBCameras()
+        public static List<UsbCameraInfo> EnumerateUsbCameras()
         {
             int status = 0;
             int count = 0;
-            IntPtr camArr = Interop.CS_EnumerateUSBCameras(ref count, ref status);
+            IntPtr camArr = Interop.CS_EnumerateUsbCameras(ref count, ref status);
 
 #pragma warning disable CS0618
             int ptrSize = Marshal.SizeOf(typeof(IntPtr));
@@ -612,31 +612,31 @@ namespace CSCore.Native
             for (int i = 0; i < count; i++)
             {
                 IntPtr ptr = new IntPtr(camArr.ToInt64() + ptrSize * i);
-                CSUSBCameraInfo info = (CSUSBCameraInfo)Marshal.PtrToStructure(ptr, typeof(CSUSBCameraInfo));
+                CSUsbCameraInfo info = (CSUsbCameraInfo)Marshal.PtrToStructure(ptr, typeof(CSUsbCameraInfo));
                 list.Add(info.ToManaged());
 
             }
-            Interop.CS_FreeEnumeratedUSBCameras(camArr, count);
+            Interop.CS_FreeEnumeratedUsbCameras(camArr, count);
             return list;
         }
 
-        public static string GetUSBCameraPath(int handle)
+        public static string GetUsbCameraPath(int handle)
         {
             int status = 0;
-            IntPtr ret = Interop.CS_GetUSBCameraPath(handle, ref status);
+            IntPtr ret = Interop.CS_GetUsbCameraPath(handle, ref status);
             CheckStatus(status);
             string sRet = Interop.ReadUTF8String(ret);
             Interop.CS_FreeString(ret);
             return sRet;
         }
 
-        public static int CreateHTTPCamera(string name, string url)
+        public static int CreateHttpCamera(string name, string url)
         {
             UIntPtr size;
             byte[] nStr = Interop.CreateUTF8String(name, out size);
             byte[] uStr = Interop.CreateUTF8String(url, out size);
             int status = 0;
-            int ret = Interop.CS_CreateHTTPCamera(nStr, uStr, ref status);
+            int ret = Interop.CS_CreateHttpCamera(nStr, uStr, ref status);
             CheckStatus(status);
             return ret;
         }
