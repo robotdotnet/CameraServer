@@ -342,6 +342,8 @@ namespace CSCore.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_FreeNetworkInterfacesDelegate(IntPtr interfaces, int count);
 
+#pragma warning disable CS0649
+
         [NativeDelegate]
         internal static CS_GetPropertyKindDelegate CS_GetPropertyKind;
         [NativeDelegate]
@@ -481,6 +483,7 @@ namespace CSCore.Native
         [NativeDelegate] internal static CS_GetNetworkInterfacesDelegate CS_GetNetworkInterfaces;
         [NativeDelegate] internal static CS_FreeNetworkInterfacesDelegate CS_FreeNetworkInterfaces;
 
+#pragma warning restore CS0649
         internal static byte[] CreateUTF8String(string str, out UIntPtr size)
         {
             var bytes = Encoding.UTF8.GetByteCount(str);

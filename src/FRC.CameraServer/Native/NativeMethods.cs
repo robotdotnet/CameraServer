@@ -299,7 +299,11 @@ namespace CSCore.Native
         {
             int status = 0;
             int count = 0;
+            #if !NETSTANDARD
             int modeSize = Marshal.SizeOf(typeof(VideoMode));
+            #else
+            int modeSize = Marshal.SizeOf<VideoMode>();
+            #endif
             IntPtr modeArray = Interop.CS_EnumerateSourceVideoModes(handle, ref count, ref status);
             CheckStatus(status);
             List<VideoMode> modes = new List<VideoMode>(count);
@@ -438,7 +442,11 @@ namespace CSCore.Native
         {
             int status = 0;
             int count = 0;
+            #if !NETSTANDARD
             int ptrSize = Marshal.SizeOf(typeof(IntPtr));
+            #else
+            int ptrSize = Marshal.SizeOf<IntPtr>();
+            #endif
             IntPtr choicesArray = Interop.CS_GetEnumPropertyChoices(handle, ref count, ref status);
             CheckStatus(status);
             List<string> choices = new List<string>(count);
@@ -605,14 +613,20 @@ namespace CSCore.Native
             int count = 0;
             IntPtr camArr = Interop.CS_EnumerateUsbCameras(ref count, ref status);
 
-#pragma warning disable CS0618
+            #if !NETSTANDARD
             int ptrSize = Marshal.SizeOf(typeof(IntPtr));
-#pragma warning restore CS0618
+            #else
+            int ptrSize = Marshal.SizeOf<IntPtr>();
+            #endif
             List<UsbCameraInfo> list = new List<UsbCameraInfo>(count);
             for (int i = 0; i < count; i++)
             {
                 IntPtr ptr = new IntPtr(camArr.ToInt64() + ptrSize * i);
+                #if !NETSTANDARD
                 CSUsbCameraInfo info = (CSUsbCameraInfo)Marshal.PtrToStructure(ptr, typeof(CSUsbCameraInfo));
+                #else
+                CSUsbCameraInfo info = Marshal.PtrToStructure<CSUsbCameraInfo>(ptr);
+                #endif
                 list.Add(info.ToManaged());
 
             }
@@ -695,7 +709,11 @@ namespace CSCore.Native
         public static List<string> GetNetworkInterfaces()
         {
             int count = 0;
+            #if !NETSTANDARD
             int ptrSize = Marshal.SizeOf(typeof(IntPtr));
+            #else
+            int ptrSize = Marshal.SizeOf<IntPtr>();
+            #endif
             var arr = Interop.CS_GetNetworkInterfaces(ref count);
             List<string> interfaces = new List<string>(count);
 
