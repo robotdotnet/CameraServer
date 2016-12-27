@@ -11,7 +11,9 @@ namespace CSCore
         InvalidProperty = -2002,
         WrongPropertyType = -2003,
         PropertyReadFailed = -2004,
-        SourceIsDisconnected = -2005
+        SourceIsDisconnected = -2005,
+        EmptyValue = -2006,
+        BadUrl = -2007
     }
 
     public enum PixelFormat
@@ -19,7 +21,34 @@ namespace CSCore
         Unknown = 0,
         Mjpeg,
         YUYV,
-        RGB565
+        RGB565,
+        BGR,
+        GRAY
+    }
+
+    /// <summary>
+    /// The log level to use for the logger
+    /// </summary>
+    public enum LogLevel
+    {
+        ///
+        LogCritical = 50,
+        ///
+        LogError = 40,
+        ///
+        LogWarning = 30,
+        ///
+        LogInfo = 20,
+        ///
+        LogDebug = 10,
+        ///
+        LogDebug1 = 9,
+        ///
+        LogDebug2 = 8,
+        ///
+        LogDebug3 = 7,
+        ///
+        LogDebug4 = 6
     }
 
     public enum PropertyKind
@@ -37,6 +66,14 @@ namespace CSCore
         Usb = 1,
         Http = 2,
         CV = 4,
+    }
+
+    public enum HttpCameraKind
+    {
+        Unknown = 0,
+        MjpegStreamer = 1,
+        CsCore = 2,
+        Axis = 3
     }
 
     public enum SinkKind

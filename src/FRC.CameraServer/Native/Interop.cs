@@ -170,7 +170,10 @@ namespace CSCore.Native
                                          ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate int CS_CreateHttpCameraDelegate(byte[] name, byte[] url,
-                                      ref int status);
+                                        HttpCameraKind kind, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate int CS_CreateHttpCameraMultiDelegate(byte[] name, NativeMethods.StringWrite[] urls, int count, 
+                                        HttpCameraKind kind, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate int CS_CreateCvSourceDelegate(byte[] name, ref VideoMode mode, ref int status);
 
@@ -220,6 +223,14 @@ namespace CSCore.Native
         internal delegate int CS_CopySourceDelegate(int source, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_ReleaseSourceDelegate(int source, ref int status);
+
+        // HttpCamera Source Functions
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate HttpCameraKind CS_GetHttpCameraKindDelegate(int source, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_SetHttpCameraUrlsDelegate(int source, NativeMethods.StringWrite[] urls, int count, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate IntPtr CS_GetHttpCameraUrlsDelegate(int source, ref int count, ref int status);
 
         // UsbCameraSourceFunctions
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -341,6 +352,15 @@ namespace CSCore.Native
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_FreeNetworkInterfacesDelegate(IntPtr interfaces, int count);
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_FreeHttpCameraUrlsDelegate(IntPtr urls, int count);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void CS_LogFunc(uint level, IntPtr file, uint line, IntPtr msg);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_SetLoggerDelegate(CS_LogFunc funct, uint min_level);
 
 #pragma warning disable CS0649
 
@@ -372,6 +392,8 @@ namespace CSCore.Native
         internal static CS_CreateUsbCameraPathDelegate CS_CreateUsbCameraPath;
         [NativeDelegate]
         internal static CS_CreateHttpCameraDelegate CS_CreateHttpCamera;
+        [NativeDelegate]
+        internal static CS_CreateHttpCameraMultiDelegate CS_CreateHttpCameraMulti;
         [NativeDelegate]
         internal static CS_CreateCvSourceDelegate CS_CreateCvSource;
         [NativeDelegate]
@@ -482,6 +504,11 @@ namespace CSCore.Native
         [NativeDelegate] internal static CS_GetHostnameDelegate CS_GetHostname;
         [NativeDelegate] internal static CS_GetNetworkInterfacesDelegate CS_GetNetworkInterfaces;
         [NativeDelegate] internal static CS_FreeNetworkInterfacesDelegate CS_FreeNetworkInterfaces;
+        [NativeDelegate] internal static CS_FreeHttpCameraUrlsDelegate CS_FreeHttpCameraUrls;
+
+        [NativeDelegate] internal static CS_GetHttpCameraKindDelegate CS_GetHttpCameraKind;
+        [NativeDelegate] internal static CS_GetHttpCameraUrlsDelegate CS_GetHttpCameraUrls;
+        [NativeDelegate] internal static CS_SetHttpCameraUrlsDelegate CS_SetHttpCameraUrls;
 
 #pragma warning restore CS0649
         internal static byte[] CreateUTF8String(string str, out UIntPtr size)

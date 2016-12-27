@@ -5,6 +5,15 @@ using System.Text;
 
 namespace CSCore.Native
 {
+    /// <summary>
+    /// This delegate is use to specify the log function called back from the library
+    /// </summary>
+    /// <param name="level">The level of the current log</param>
+    /// <param name="file">The file the log was called from</param>
+    /// <param name="line">The line the log was called from</param>
+    /// <param name="msg">The message of the log</param>
+    public delegate void LogFunc(LogLevel level, string file, int line, string msg);
+
     public static class NativeMethods
     {
         private static bool CheckStatus(int status)
@@ -29,6 +38,12 @@ namespace CSCore.Native
                         break;
                     case StatusValue.WrongPropertyType:
                         msg = "wrong property type";
+                        break;
+                    case StatusValue.EmptyValue:
+                        msg = "empty value";
+                        break;
+                    case StatusValue.BadUrl:
+                        msg = "bad URL";
                         break;
                     case StatusValue.PropertyReadFailed:
                         msg = "read failed";
@@ -644,15 +659,92 @@ namespace CSCore.Native
             return sRet;
         }
 
-        public static int CreateHttpCamera(string name, string url)
+        public static int CreateHttpCamera(string name, string url, HttpCameraKind kind)
         {
             UIntPtr size;
             byte[] nStr = Interop.CreateUTF8String(name, out size);
             byte[] uStr = Interop.CreateUTF8String(url, out size);
             int status = 0;
-            int ret = Interop.CS_CreateHttpCamera(nStr, uStr, ref status);
+            int ret = Interop.CS_CreateHttpCamera(nStr, uStr, kind, ref status);
             CheckStatus(status);
             return ret;
+        }
+
+        public static int CreateHttpCameraMulti(string name, IList<string> urls, HttpCameraKind kind)
+        {
+            UIntPtr size;
+            byte[] nStr = Interop.CreateUTF8String(name, out size);
+            StringWrite[] nativeChoices = new StringWrite[urls.Count];
+            for(int i = 0; i < urls.Count; i++)
+            {
+                nativeChoices[i] = new StringWrite(urls[i]);
+            }
+            try
+            {
+                int status = 0;
+                int ret = Interop.CS_CreateHttpCameraMulti(nStr, nativeChoices, nativeChoices.Length, kind, ref status);
+                CheckStatus(status);
+                return ret;
+            }
+            finally
+            {
+                for (int i = 0; i < nativeChoices.Length; i++)
+                {
+                    nativeChoices[i].Dispose();
+                }
+            }
+        }
+
+        public static HttpCameraKind GetHttpCameraKind(int source)
+        {
+            int status = 0;
+            HttpCameraKind ret = Interop.CS_GetHttpCameraKind(source, ref status);
+            CheckStatus(status);
+            return ret;
+        }
+
+        public static void SetHttpCameraUrls(int source, IList<string> urls)
+        {
+            StringWrite[] nativeChoices = new StringWrite[urls.Count];
+            for(int i = 0; i < urls.Count; i++)
+            {
+                nativeChoices[i] = new StringWrite(urls[i]);
+            }
+            try
+            {
+                int status = 0;
+                Interop.CS_SetHttpCameraUrls(source, nativeChoices, nativeChoices.Length, ref status);
+                CheckStatus(status);
+            }
+            finally
+            {
+                for (int i = 0; i < nativeChoices.Length; i++)
+                {
+                    nativeChoices[i].Dispose();
+                }
+            }
+        }
+
+        public static List<string> GetHttpCameraUrls(int source)
+        {
+            int count = 0;
+            #if !NETSTANDARD
+            int ptrSize = Marshal.SizeOf(typeof(IntPtr));
+            #else
+            int ptrSize = Marshal.SizeOf<IntPtr>();
+            #endif
+            int status = 0;
+            var arr = Interop.CS_GetHttpCameraUrls(source, ref count, ref status);
+            CheckStatus(status);
+            List<string> urls = new List<string>(count);
+
+            for (int i = 0; i < count; i++)
+            {
+                IntPtr h = new IntPtr(arr.ToInt64() + ptrSize * i);
+                urls.Add(Interop.ReadUTF8String(h));
+            }
+            Interop.CS_FreeHttpCameraUrls(arr, count);
+            return urls;
         }
 
         public static int CopySource(int handle)
@@ -724,6 +816,27 @@ namespace CSCore.Native
             }
             Interop.CS_FreeNetworkInterfaces(arr, count);
             return interfaces;
+        }
+
+        private static Interop.CS_LogFunc s_nativeLog;
+
+        /// <summary>
+        /// Assigns a method to be called whenever a log statement occurs in the internal
+        /// network table library.
+        /// </summary>
+        /// <param name="func">The log function to assign.</param>
+        /// <param name="minLevel">The minimum level to log.</param>
+        public static void SetLogger(LogFunc func, LogLevel minLevel)
+        {
+            s_nativeLog = (level, file, line, msg) =>
+            {
+                string message = Interop.ReadUTF8String(msg);
+                string fileName = Interop.ReadUTF8String(file);
+
+                func((LogLevel)level, fileName, (int)line, message);
+            };
+
+            Interop.CS_SetLogger(s_nativeLog, (uint)minLevel);
         }
     }
 }
