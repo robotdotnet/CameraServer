@@ -510,6 +510,8 @@ namespace CSCore.Native
         [NativeDelegate] internal static CS_GetHttpCameraUrlsDelegate CS_GetHttpCameraUrls;
         [NativeDelegate] internal static CS_SetHttpCameraUrlsDelegate CS_SetHttpCameraUrls;
 
+        [NativeDelegate] internal static CS_SetLoggerDelegate CS_SetLogger;
+
 #pragma warning restore CS0649
         internal static byte[] CreateUTF8String(string str, out UIntPtr size)
         {
