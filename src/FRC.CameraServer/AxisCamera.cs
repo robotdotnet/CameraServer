@@ -25,7 +25,7 @@ namespace CSCore
 
         }
 
-        public AxisCamera(string name, List<string> hosts)
+        public AxisCamera(string name, IList<string> hosts)
             : base(name, HostToUrl(hosts), HttpCameraKind.Axis)
         {
             
