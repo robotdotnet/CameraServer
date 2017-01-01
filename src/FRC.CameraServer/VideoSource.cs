@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CSCore.Native;
 
 namespace CSCore
 {
@@ -137,7 +136,7 @@ namespace CSCore
 
         public static List<VideoSource> EnumerateSources()
         {
-            var handles = Native.NativeMethods.EnumerateSources();
+            var handles = NativeMethods.EnumerateSources();
             List<VideoSource> sources = new List<VideoSource>(handles.Count);
             foreach (var h in handles)
             {

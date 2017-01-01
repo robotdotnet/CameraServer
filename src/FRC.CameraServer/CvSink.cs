@@ -1,5 +1,4 @@
 ﻿using OpenCvSharp;
-using NativeMethods = CSCore.Native.NativeMethods;
 
 namespace CSCore
 {

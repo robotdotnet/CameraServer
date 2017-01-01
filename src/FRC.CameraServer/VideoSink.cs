@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CSCore.Native;
 
 namespace CSCore
 {
@@ -85,7 +84,7 @@ namespace CSCore
 
         public static List<VideoSink> EnumerateSinks()
         {
-            List<int> sinkHandles = Native.NativeMethods.EnumerateSinks();
+            List<int> sinkHandles = NativeMethods.EnumerateSinks();
             List<VideoSink> sinks = new List<VideoSink>(sinkHandles.Count);
             foreach(var h in sinkHandles)
             {

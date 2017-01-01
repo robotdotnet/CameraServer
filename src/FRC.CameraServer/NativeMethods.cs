@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using CSCore.Native;
 
-namespace CSCore.Native
+namespace CSCore
 {
     /// <summary>
     /// This delegate is use to specify the log function called back from the library
