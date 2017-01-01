@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using NativeLibraryUtilities;
+// ReSharper disable InconsistentNaming
 
 namespace CSCore.Native
 {
@@ -311,7 +312,7 @@ namespace CSCore.Native
 
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate int CS_AddListenerDelegate(IntPtr data, CS_ListenerCallback callback, int eventMask, int immediateNotify, ref int status);
+        internal delegate int CS_AddListenerDelegate(IntPtr data, CS_ListenerCallback callback, EventKind eventMask, int immediateNotify, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_RemoveListenerDelegate(int handle, ref int status);
 

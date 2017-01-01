@@ -3,49 +3,77 @@ using System.Collections.Generic;
 
 namespace CSCore
 {
+    /// <summary>
+    /// A sink for video that provides a sequence of frames
+    /// </summary>
+    /// <remarks>
+    /// Each frame may consist of multiple images (e.g. from a stereo or depth camera); 
+    /// these are called channels
+    /// </remarks>
     public class VideoSink : IDisposable
     {
-        protected int m_handle;
+        /// <summary>
+        /// Gets if the sink is valid
+        /// </summary>
+        public bool IsValid => Handle != 0;
 
-        public bool IsValid => m_handle != 0;
+        /// <summary>
+        /// Gets the handle associated with this sink
+        /// </summary>
+        public int Handle { get; protected set; }
 
-        public int Handle => m_handle;
-
+        /// <summary>
+        /// Creates a new VideoSink
+        /// </summary>
+        /// <param name="handle">The handle to create from</param>
         protected internal VideoSink(int handle)
         {
-            m_handle = handle;
+            Handle = handle;
         }
 
+        /// <summary>
+        /// Disposes of the sink
+        /// </summary>
         public void Dispose()
         {
-            if (m_handle != 0)
+            if (Handle != 0)
             {
-                NativeMethods.ReleaseSink(m_handle);
+                NativeMethods.ReleaseSink(Handle);
             }
-            m_handle = 0;
+            Handle = 0;
         }
 
+        /// <summary>
+        /// Checks if the 2 objects are equal
+        /// </summary>
+        /// <param name="other">The other object to check</param>
+        /// <returns>True if the objects are equal</returns>
         public override bool Equals(object other)
         {
             if (this == other) return true;
-            if (other == null) return false;
             VideoSink otherSink = other as VideoSink;
-            if (otherSink == null) return false;
-            return m_handle == otherSink.m_handle;
+            return Handle == otherSink?.Handle;
         }
 
-        public override int GetHashCode()
-        {
-            return m_handle;
-        }
+        /// <summary>
+        /// Gets the HashCode for this object
+        /// </summary>
+        /// <returns>The hashcode (the handle is the hash code)</returns>
+        public override int GetHashCode() => Handle;
 
-        public SinkKind Kind => NativeMethods.GetSinkKind(m_handle);
+        /// <summary>
+        /// Gets the kind of this sink
+        /// </summary>
+        public SinkKind Kind => NativeMethods.GetSinkKind(Handle);
 
+        /// <summary>
+        /// Gets or sets the name of this sink
+        /// </summary>
         public virtual string Name
         {
             get
             {
-                return NativeMethods.GetSinkName(m_handle);
+                return NativeMethods.GetSinkName(Handle);
             }
             set
             {
@@ -53,11 +81,14 @@ namespace CSCore
             }
         }
 
+        /// <summary>
+        /// Gets or sets the description of this sink
+        /// </summary>
         public virtual string Description
         {
             get
             {
-                return NativeMethods.GetSinkDescription(m_handle);
+                return NativeMethods.GetSinkDescription(Handle);
             }
             set
             {
@@ -65,23 +96,35 @@ namespace CSCore
             }
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="VideoSource"/> attached to this sink
+        /// </summary>
         public VideoSource Source
         {
             get
             {
-                return new VideoSource(NativeMethods.GetSinkSource(m_handle));
+                return new VideoSource(NativeMethods.GetSinkSource(Handle));
             }
             set
             {
-                NativeMethods.SetSinkSource(m_handle, value.Handle);
+                NativeMethods.SetSinkSource(Handle, value.Handle);
             }
         }
 
+        /// <summary>
+        /// Gets a VideoProperty from this sink
+        /// </summary>
+        /// <param name="name">The property to get</param>
+        /// <returns>The property</returns>
         public VideoProperty GetSourceProperty(string name)
         {
-            return new VideoProperty(NativeMethods.GetSinkSourceProperty(m_handle, name));
+            return new VideoProperty(NativeMethods.GetSinkSourceProperty(Handle, name));
         }
 
+        /// <summary>
+        /// Enumerates all existing sinks
+        /// </summary>
+        /// <returns>A list of all existing sinks</returns>
         public static List<VideoSink> EnumerateSinks()
         {
             List<int> sinkHandles = NativeMethods.EnumerateSinks();

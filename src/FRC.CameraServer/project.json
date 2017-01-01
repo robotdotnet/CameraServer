@@ -26,9 +26,7 @@
     }
   },
   "buildOptions": {
-    "xmlDoc": true,
-    "nowarn": [ "CS1591" ]
-    
+    "xmlDoc": true
   },
   "frameworks": {
     "net45": {

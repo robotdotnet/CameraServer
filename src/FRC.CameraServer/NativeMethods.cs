@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using CSCore.Native;
+#pragma warning disable 1591
 
 namespace CSCore
 {
@@ -15,6 +16,9 @@ namespace CSCore
     /// <param name="msg">The message of the log</param>
     public delegate void LogFunc(LogLevel level, string file, int line, string msg);
 
+    /// <summary>
+    /// Low level access to all the native cscore functionality.
+    /// </summary>
     public static class NativeMethods
     {
         private static bool CheckStatus(int status)
@@ -766,7 +770,7 @@ namespace CSCore
 
         private static Dictionary<int, Interop.CS_ListenerCallback> s_listenerCallbacks = new Dictionary<int, Interop.CS_ListenerCallback>();
 
-        public static int AddListener(Action<VideoEvent> listener, int eventMask, bool immediateNotify)
+        public static int AddListener(Action<VideoEvent> listener, EventKind eventMask, bool immediateNotify)
         {
             Interop.CS_ListenerCallback modCallback = (IntPtr data, ref CSEvent evnt) =>
             {
