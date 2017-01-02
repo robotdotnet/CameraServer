@@ -1,6 +1,6 @@
 # CameraServer
 
-**BuildStatus**
+**Build Status**
 
 | Windows                 |  Linux/Mac              | NuGet                 |
 | ------------------------|-------------------------|-----------------------|
