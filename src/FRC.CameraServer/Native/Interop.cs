@@ -57,7 +57,6 @@ namespace CSCore.Native
 
         static Interop()
         {
-            Console.WriteLine("Entering CameraServer");
             if (!s_libraryLoaded)
             {
                 bool usingOpenCvLibrary = false;
