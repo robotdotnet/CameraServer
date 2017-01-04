@@ -107,7 +107,14 @@ namespace CSCore
             }
             set
             {
-                NativeMethods.SetSinkSource(Handle, value.Handle);
+                if (value == null)
+                {
+                    NativeMethods.SetSinkSource(Handle, 0);
+                }
+                else
+                {
+                    NativeMethods.SetSinkSource(Handle, value.Handle);
+                }
             }
         }
 

@@ -5,7 +5,7 @@ namespace CSCore
     /// <summary>
     /// A sources that represents an MJPEG-over-HTTP (IP) camera
     /// </summary>
-    public class HttpCamera : VideoSource
+    public class HttpCamera : VideoCamera
     {
         /// <summary>
         /// Create a source for a MJPEG-over-HTTP (IP) camera.

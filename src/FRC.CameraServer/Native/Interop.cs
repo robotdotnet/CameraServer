@@ -222,6 +222,26 @@ namespace CSCore.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_GetHttpCameraUrlsDelegate(int source, ref int count, ref int status);
 
+        // Camera Source Common Property Functions
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_SetCameraBrightnessDelegate(int source, int brightness, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate int CS_GetCameraBrightnessDelegate(int source, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_SetCameraWhiteBalanceAutoDelegate(int source, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_SetCameraWhiteBalanceHoldCurrentDelegate(int source, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_SetCameraWhiteBalanceManualDelegate(int source, int value,
+                                            ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_SetCameraExposureAutoDelegate(int source, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_SetCameraExposureHoldCurrentDelegate(int source, ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate void CS_SetCameraExposureManualDelegate(int source, int value, ref int status);
+
+
         // UsbCameraSourceFunctions
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_GetUsbCameraPathDelegate(int source, ref int status);
@@ -501,6 +521,15 @@ namespace CSCore.Native
         [NativeDelegate] internal static CS_SetHttpCameraUrlsDelegate CS_SetHttpCameraUrls;
 
         [NativeDelegate] internal static CS_SetLoggerDelegate CS_SetLogger;
+
+        [NativeDelegate] internal static CS_SetCameraBrightnessDelegate CS_SetCameraBrightness;
+        [NativeDelegate] internal static CS_GetCameraBrightnessDelegate CS_GetCameraBrightness;
+        [NativeDelegate] internal static CS_SetCameraWhiteBalanceAutoDelegate CS_SetCameraWhiteBalanceAuto;
+        [NativeDelegate] internal static CS_SetCameraWhiteBalanceHoldCurrentDelegate CS_SetCameraWhiteBalanceHoldCurrent;
+        [NativeDelegate] internal static CS_SetCameraWhiteBalanceManualDelegate CS_SetCameraWhiteBalanceManual;
+        [NativeDelegate] internal static CS_SetCameraExposureAutoDelegate CS_SetCameraExposureAuto;
+        [NativeDelegate] internal static CS_SetCameraExposureHoldCurrentDelegate CS_SetCameraExposureHoldCurrent;
+        [NativeDelegate] internal static CS_SetCameraExposureManualDelegate CS_SetCameraExposureManual;
 
 #pragma warning restore CS0649
         internal static byte[] CreateUTF8String(string str, out UIntPtr size)

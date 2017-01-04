@@ -843,5 +843,62 @@ namespace CSCore
 
             Interop.CS_SetLogger(s_nativeLog, (uint)minLevel);
         }
+
+        public static void SetCameraBrightness(int source, int brightness)
+        {
+            int status = 0;
+            Interop.CS_SetCameraBrightness(source, brightness, ref status);
+            CheckStatus(status);
+        }
+
+        public static int GetCameraBrightness(int source)
+        {
+            int status = 0;
+            var ret = Interop.CS_GetCameraBrightness(source, ref status);
+            CheckStatus(status);
+            return ret;
+        }
+
+        public static void SetCameraWhiteBalanceAuto(int source)
+        {
+            int status = 0;
+            Interop.CS_SetCameraWhiteBalanceAuto(source, ref status);
+            CheckStatus(status);
+        }
+
+        public static void SetCameraWhiteBalanceHoldCurrent(int source)
+        {
+            int status = 0;
+            Interop.CS_SetCameraWhiteBalanceHoldCurrent(source, ref status);
+            CheckStatus(status);
+        }
+
+        public static void SetCameraWhiteBalanceManual(int source, int value)
+        {
+            int status = 0;
+            Interop.CS_SetCameraWhiteBalanceManual(source, value, ref status);
+            CheckStatus(status);
+        }
+
+        public static void SetCameraExposureAuto(int source)
+        {
+            int status = 0;
+            Interop.CS_SetCameraExposureAuto(source, ref status);
+            CheckStatus(status);
+        }
+
+        public static void SetCameraExposureHoldCurrent(int source)
+        {
+            int status = 0;
+            Interop.CS_SetCameraExposureHoldCurrent(source, ref status);
+            CheckStatus(status);
+        }
+
+        public static void SetCameraExposureManual(int source, int value)
+        {
+            int status = 0;
+            Interop.CS_SetCameraExposureManual(source, value, ref status);
+            CheckStatus(status);
+        }
     }
 }
