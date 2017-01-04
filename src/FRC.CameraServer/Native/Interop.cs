@@ -57,6 +57,7 @@ namespace CSCore.Native
 
         static Interop()
         {
+            Console.WriteLine("Entering CameraServer");
             if (!s_libraryLoaded)
             {
                 bool usingOpenCvLibrary = false;
@@ -82,33 +83,22 @@ namespace CSCore.Native
                         }
                     }
 
-
-                    if (File.Exists("/usr/local/frc/bin/frcRunRobot.sh"))
+                    if (s_useCommandLineFile)
                     {
                         NativeLoader = new NativeLibraryLoader();
-                        // RoboRIO
-                        if (s_useCommandLineFile)
-                        {
-                            NativeLoader.LoadNativeLibrary<Interop>(new RoboRioLibraryLoader(), s_libraryLocation, true);
-                        }
-                        else
-                        {
-                            NativeLoader.LoadNativeLibrary<Interop>(new RoboRioLibraryLoader(), "libcscore.so", true);
-                            s_libraryLocation = NativeLoader.LibraryLocation;
-                        }
+                        NativeLoader.LoadNativeLibrary<Interop>(s_libraryLocation, true);
+                    }
+                    else if (File.Exists("/usr/local/frc/bin/frcRunRobot.sh"))
+                    {
+                        NativeLoader = new NativeLibraryLoader();
+                        NativeLoader.LoadNativeLibrary<Interop>("libcscore.so", true);
+                        s_libraryLocation = NativeLoader.LibraryLocation;
                     }
                     else
                     {
-                        if (s_useCommandLineFile)
-                        {
-                            NativeLoader.LoadNativeLibrary<Interop>(s_libraryLocation, true);
-                        }
-                        else
-                        {
-                            usingOpenCvLibrary = true;
-                            NativeLoader = OpenCvSharp.NativeMethods.NativeLoader;
-                            s_libraryLocation = NativeLoader.LibraryLocation;
-                        }
+                        usingOpenCvLibrary = true;
+                        NativeLoader = OpenCvSharp.NativeMethods.NativeLoader;
+                        s_libraryLocation = NativeLoader.LibraryLocation;
                     }
 
                     NativeDelegateInitializer.SetupNativeDelegates<Interop>(NativeLoader);
