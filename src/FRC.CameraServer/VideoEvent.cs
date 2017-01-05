@@ -51,7 +51,7 @@
         /// <summary>
         /// The property handle for a SourceProperty event
         /// </summary>
-        private int PropertyHandle { get; }
+        public int PropertyHandle { get; }
         /// <summary>
         /// The property kind for a SourceProperty event
         /// </summary>
