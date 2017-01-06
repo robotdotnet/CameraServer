@@ -7,35 +7,6 @@ namespace CSCore
     /// </summary>
     public class UsbCamera : VideoCamera
     {
-        private readonly object m_mutex = new object();
-
-        /// <summary>
-        /// Constants for camera white balance
-        /// </summary>
-        public class WhiteBalance
-        {
-            /// <summary>
-            /// Fixed indoor
-            /// </summary>
-            public const int FixedIndoor = 3000;
-            /// <summary>
-            /// Fixed outdoor 1
-            /// </summary>
-            public const int FixedOutdoor1 = 4000;
-            /// <summary>
-            /// Fixed outdoor 2
-            /// </summary>
-            public const int FixedOutdoor2 = 5000;
-            /// <summary>
-            /// Fixed Flourescent 1
-            /// </summary>
-            public const int FixedFluorescent1 = 5100;
-            /// <summary>
-            /// Fixed Flourescent 2
-            /// </summary>
-            public const int FixedFlourescent2 = 5200;
-        }
-
         /// <summary>
         /// Create a source for a USB camera based on device number.
         /// </summary>
