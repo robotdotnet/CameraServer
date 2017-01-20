@@ -47,6 +47,6 @@
     }
   },
   "dependencies": {
-    "FRC.OpenCvSharp": "1.0.0"
+    "FRC.OpenCvSharp": "1.0.1"
   }
 }

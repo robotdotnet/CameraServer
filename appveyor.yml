@@ -7,6 +7,7 @@ branches:
   - master
 nuget:
   disable_publish_on_pr: true
+  account_feed: true
 build_script:
 - ps: ./netcore.ps1 -build
 test_script:
