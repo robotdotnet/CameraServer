@@ -1,7 +1,7 @@
 ﻿namespace CSCore
 {
     /// <summary>
-    /// A sink that acts as a MJPEF-over-HTTP network server.
+    /// A sink that acts as a MJPEG-over-HTTP network server.
     /// </summary>
     public class MjpegServer : VideoSink
     {
