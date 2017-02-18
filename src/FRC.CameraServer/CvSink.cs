@@ -11,7 +11,7 @@ namespace CSCore
         /// Create a sink for accepting OpenCV images
         /// </summary>
         /// <remarks>
-        /// <see cref="GrabFrame"/> must be called on the created sink to get
+        /// GrabFrame must be called on the created sink to get
         /// each new frame
         /// </remarks>
         /// <param name="name">Source name (arbitrary unique identifier</param>
@@ -32,7 +32,7 @@ namespace CSCore
         }
 
         /// <summary>
-        /// Wait for the next frame and get the image
+        /// Wait for the next frame and get the image, timing out after 0.225 seconds, returning 0
         /// </summary>
         /// <remarks>
         /// The provided image will have three 3-bit channels stored in BGR order
@@ -42,6 +42,36 @@ namespace CSCore
         /// the error message</returns>
         public long GrabFrame(Mat image)
         {
+            return GrabFrame(image, 0.225);
+        }
+
+        /// <summary>
+        /// Wait for the next frame and get the image, timing out after specified seconds
+        /// </summary>
+        /// <remarks>
+        /// The provided image will have three 3-bit channels stored in BGR order. 
+        /// Upon a timeout, returns 0.
+        /// </remarks>
+        /// <param name="image">The <see cref="Mat"/> to store the image in</param>
+        /// <param name="timeout">Timeout in seconds</param>
+        /// <returns>Frame time, or 0 on error (call <see cref="GetError"/> to obtain 
+        /// the error message</returns>
+        public long GrabFrame(Mat image, double timeout)
+        {
+            return (long)NativeMethods.GrabSinkFrameTimeout(Handle, image.CvPtr, timeout);
+        }
+
+        /// <summary>
+        /// Wait for the next frame and get the image.
+        /// </summary>
+        /// <remarks>
+        /// The provided image will have three 3-bit channels stored in BGR order
+        /// </remarks>
+        /// <param name="image">The <see cref="Mat"/> to store the image in</param>
+        /// <returns>Frame time, or 0 on error (call <see cref="GetError"/> to obtain 
+        /// the error message</returns>
+        public long GrabFrameNoTimeout(Mat image)
+        {
             return (long)NativeMethods.GrabSinkFrame(Handle, image.CvPtr);
         }
 
@@ -49,7 +79,7 @@ namespace CSCore
         /// Get the latest error string. 
         /// </summary>
         /// <remarks>
-        /// Call if <see cref="GrabFrame"/> returns 0 to determine what the error is
+        /// Call if GrabFrame returns 0 to determine what the error is
         /// </remarks>
         /// <returns></returns>
         public string GetError()
@@ -61,7 +91,7 @@ namespace CSCore
         /// Enable or disable getting new frames
         /// </summary>
         /// <remarks>
-        /// Disabling will cause <see cref="GrabFrame"/> to not return. This can
+        /// Disabling will cause GrabFrame to not return. This can
         /// be used to save processor resources when frames are not needed
         /// </remarks>
         public bool Enabled

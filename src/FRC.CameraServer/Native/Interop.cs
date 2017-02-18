@@ -315,6 +315,9 @@ namespace CSCore.Native
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate ulong CS_GrabSinkFrameCppDelegate(int sink, IntPtr image, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate ulong CS_GrabSinkFrameTimeoutCppDelegate(int sink, IntPtr image, double timeout,
+            ref int status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr CS_GetSinkErrorDelegate(int sink, ref int status);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CS_SetSinkEnabledDelegate(int sink, [MarshalAs(UnmanagedType.Bool)]bool enabled, ref int status);
@@ -450,6 +453,8 @@ namespace CSCore.Native
         internal static CS_ReleaseSinkDelegate CS_ReleaseSink;
         [NativeDelegate]
         internal static CS_GrabSinkFrameCppDelegate CS_GrabSinkFrameCpp;
+        [NativeDelegate]
+        internal static CS_GrabSinkFrameTimeoutCppDelegate CS_GrabSinkFrameTimeoutCpp;
         [NativeDelegate]
         internal static CS_GetSinkErrorDelegate CS_GetSinkError;
         [NativeDelegate]

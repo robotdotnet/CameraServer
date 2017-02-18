@@ -94,6 +94,15 @@ namespace CSCore
             return ret;
         }
 
+        public static ulong GrabSinkFrameTimeout(int handle, IntPtr nativeObj, double timeout)
+        {
+            int status = 0;
+            ulong ret = Interop.CS_GrabSinkFrameTimeoutCpp(handle, nativeObj, timeout,
+                ref status);
+            CheckStatus(status);
+            return ret;
+        }
+
         public static string GetSinkError(int handle)
         {
             int status = 0;
