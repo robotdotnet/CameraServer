@@ -1,0 +1,64 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  tags:
+    include:
+    - v*
+  branches:
+    include:
+    - master
+
+jobs:
+ - job: Linux
+   pool:
+     vmImage: 'ubuntu-latest'
+
+   steps:
+    - script: ./build.sh
+      displayName: 'Build Artifacts'
+
+    - task: CopyFiles@2
+      inputs:
+        Contents: 'Artifacts/**/*.nupkg'
+        targetFolder: $(Build.ArtifactStagingDirectory)
+      displayName: "Copy Artifacts"
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        artifactName: 'NuGet'
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '**/*.trx'
+
+ - job: Windows
+   pool:
+     vmImage: 'vs2017-win2016'
+
+   steps:
+    - powershell: ./build.ps1
+      displayName: 'Build Artifacts'
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '**/*.trx'
+
+
+ - job: Mac
+   pool:
+     vmImage: 'macOS-10.14'
+
+   steps:
+    - script: ./build.sh
+      displayName: 'Build Artifacts'
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '**/*.trx'
+

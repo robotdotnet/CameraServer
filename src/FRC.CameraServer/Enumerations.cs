@@ -1,9 +1,8 @@
-﻿using System;
-// ReSharper disable InconsistentNaming
+using System;
 
-namespace CSCore
+namespace FRC.CameraServer
 {
-    /// <summary>
+/// <summary>
     /// Error status values returned from native methods
     /// </summary>
     public enum StatusValue
@@ -47,7 +46,9 @@ namespace CSCore
         /// <summary>
         /// An HTTP camera was given a bad URL
         /// </summary>
-        BadUrl = -2007
+        BadUrl = -2007,
+        TelemetryNotEnabled = -2008,
+        UnsupportedMode = -2009
     }
 
     /// <summary>
