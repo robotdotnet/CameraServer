@@ -6,16 +6,16 @@ namespace FRC.CameraServer.Interop
     /// <summary>
     /// Low level CS Core Handle
     /// </summary>
-    public readonly struct CsHandle : IEquatable<CsHandle> 
+    public readonly struct CS_Handle
     {
-private readonly int m_value;
+        private readonly int m_value;
 
         /// <summary>
         /// Create a handle from an int.
         /// </summary>
         /// <param name="value">handle value</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public CsHandle(int value)
+        public CS_Handle(int value)
         {
             m_value = value;
         }
@@ -38,11 +38,7 @@ private readonly int m_value;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
-            if (obj is CsHandle v)
-            {
-                return Equals(v);
-            }
-            return false;
+            return false; // Because ref struct, can never be equal
         }
 
         /// <summary>
@@ -51,7 +47,7 @@ private readonly int m_value;
         /// <param name="other">Handle to check</param>
         /// <returns>True if equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(CsHandle other)
+        public bool Equals(CS_Handle other)
         {
             return m_value == other.m_value;
         }
@@ -73,7 +69,7 @@ private readonly int m_value;
         /// <param name="rhs">Right Hand Side</param>
         /// <returns>true if equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator==(CsHandle lhs, CsHandle rhs)
+        public static bool operator==(CS_Handle lhs, CS_Handle rhs)
         {
             return lhs.m_value == rhs.m_value;
         }
@@ -85,7 +81,7 @@ private readonly int m_value;
         /// <param name="rhs">Right Hand Side</param>
         /// <returns>true if not equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator!=(CsHandle lhs, CsHandle rhs)
+        public static bool operator!=(CS_Handle lhs, CS_Handle rhs)
         {
             return lhs.m_value != rhs.m_value;
         }
@@ -94,18 +90,18 @@ private readonly int m_value;
     /// <summary>
     /// Low Level NT Core Instance Handle
     /// </summary>
-    public readonly struct CsProperty
+    public readonly struct CS_Property
     {
-        private readonly CsHandle m_value;
+        private readonly CS_Handle m_value;
 
         /// <summary>
         /// Creates a new handle
         /// </summary>
         /// <param name="value">handle value</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public CsProperty(int value)
+        public CS_Property(int value)
         {
-            m_value = new CsHandle(value);
+            m_value = new CS_Handle(value);
         }
 
         /// <summary>
@@ -123,7 +119,7 @@ private readonly int m_value;
         /// </summary>
         /// <param name="value">The current handle</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator CsHandle(CsProperty value)
+        public static implicit operator CS_Handle(CS_Property value)
         {
             return value.m_value;
         }
@@ -136,10 +132,6 @@ private readonly int m_value;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
-            if (obj is CsProperty v)
-            {
-                return Equals(v);
-            }
             return false;
         }
 
@@ -149,7 +141,7 @@ private readonly int m_value;
         /// <param name="other">Handle to check</param>
         /// <returns>True if equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(CsProperty other)
+        public bool Equals(CS_Property other)
         {
             return m_value == other.m_value;
         }
@@ -171,7 +163,7 @@ private readonly int m_value;
         /// <param name="rhs">Right Hand Side</param>
         /// <returns>true if equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(CsProperty lhs, CsProperty rhs)
+        public static bool operator ==(CS_Property lhs, CS_Property rhs)
         {
             return lhs.m_value == rhs.m_value;
         }
@@ -182,7 +174,7 @@ private readonly int m_value;
         /// <param name="lhs">Left Hand Side</param>
         /// <param name="rhs">Right Hand Side</param>
         /// <returns>true if not equal</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(CsProperty lhs, CsProperty rhs)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(CS_Property lhs, CS_Property rhs)
         {
             return lhs.m_value != rhs.m_value;
         }
@@ -191,18 +183,18 @@ private readonly int m_value;
     /// <summary>
     /// Low Level NT Core Instance Handle
     /// </summary>
-    public readonly struct CsListener
+    public readonly struct CS_Listener
     {
-        private readonly CsHandle m_value;
+        private readonly CS_Handle m_value;
 
         /// <summary>
         /// Creates a new handle
         /// </summary>
         /// <param name="value">handle value</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public CsListener(int value)
+        public CS_Listener(int value)
         {
-            m_value = new CsHandle(value);
+            m_value = new CS_Handle(value);
         }
 
         /// <summary>
@@ -220,7 +212,7 @@ private readonly int m_value;
         /// </summary>
         /// <param name="value">The current handle</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator CsHandle(CsListener value)
+        public static implicit operator CS_Handle(CS_Listener value)
         {
             return value.m_value;
         }
@@ -233,10 +225,6 @@ private readonly int m_value;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
-            if (obj is CsListener v)
-            {
-                return Equals(v);
-            }
             return false;
         }
 
@@ -246,7 +234,7 @@ private readonly int m_value;
         /// <param name="other">Handle to check</param>
         /// <returns>True if equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(CsListener other)
+        public bool Equals(CS_Listener other)
         {
             return m_value == other.m_value;
         }
@@ -268,7 +256,7 @@ private readonly int m_value;
         /// <param name="rhs">Right Hand Side</param>
         /// <returns>true if equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(CsListener lhs, CsListener rhs)
+        public static bool operator ==(CS_Listener lhs, CS_Listener rhs)
         {
             return lhs.m_value == rhs.m_value;
         }
@@ -279,7 +267,7 @@ private readonly int m_value;
         /// <param name="lhs">Left Hand Side</param>
         /// <param name="rhs">Right Hand Side</param>
         /// <returns>true if not equal</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(CsListener lhs, CsListener rhs)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(CS_Listener lhs, CS_Listener rhs)
         {
             return lhs.m_value != rhs.m_value;
         }
@@ -288,18 +276,18 @@ private readonly int m_value;
     /// <summary>
     /// Low Level NT Core Instance Handle
     /// </summary>
-    public readonly struct CsSink
+    public readonly struct CS_Sink
     {
-        private readonly CsHandle m_value;
+        private readonly CS_Handle m_value;
 
         /// <summary>
         /// Creates a new handle
         /// </summary>
         /// <param name="value">handle value</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public CsSink(int value)
+        public CS_Sink(int value)
         {
-            m_value = new CsHandle(value);
+            m_value = new CS_Handle(value);
         }
 
         /// <summary>
@@ -317,7 +305,7 @@ private readonly int m_value;
         /// </summary>
         /// <param name="value">The current handle</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator CsHandle(CsSink value)
+        public static implicit operator CS_Handle(CS_Sink value)
         {
             return value.m_value;
         }
@@ -330,10 +318,6 @@ private readonly int m_value;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
-            if (obj is CsSink v)
-            {
-                return Equals(v);
-            }
             return false;
         }
 
@@ -343,7 +327,7 @@ private readonly int m_value;
         /// <param name="other">Handle to check</param>
         /// <returns>True if equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(CsSink other)
+        public bool Equals(CS_Sink other)
         {
             return m_value == other.m_value;
         }
@@ -365,7 +349,7 @@ private readonly int m_value;
         /// <param name="rhs">Right Hand Side</param>
         /// <returns>true if equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(CsSink lhs, CsSink rhs)
+        public static bool operator ==(CS_Sink lhs, CS_Sink rhs)
         {
             return lhs.m_value == rhs.m_value;
         }
@@ -376,7 +360,7 @@ private readonly int m_value;
         /// <param name="lhs">Left Hand Side</param>
         /// <param name="rhs">Right Hand Side</param>
         /// <returns>true if not equal</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(CsSink lhs, CsSink rhs)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(CS_Sink lhs, CS_Sink rhs)
         {
             return lhs.m_value != rhs.m_value;
         }
@@ -385,18 +369,18 @@ private readonly int m_value;
     /// <summary>
     /// Low Level NT Core Instance Handle
     /// </summary>
-    public readonly struct CsSource
+    public readonly struct CS_Source
     {
-        private readonly CsHandle m_value;
+        private readonly CS_Handle m_value;
 
         /// <summary>
         /// Creates a new handle
         /// </summary>
         /// <param name="value">handle value</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public CsSource(int value)
+        public CS_Source(int value)
         {
-            m_value = new CsHandle(value);
+            m_value = new CS_Handle(value);
         }
 
         /// <summary>
@@ -414,7 +398,7 @@ private readonly int m_value;
         /// </summary>
         /// <param name="value">The current handle</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator CsHandle(CsSource value)
+        public static implicit operator CS_Handle(CS_Source value)
         {
             return value.m_value;
         }
@@ -427,10 +411,6 @@ private readonly int m_value;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj)
         {
-            if (obj is CsSource v)
-            {
-                return Equals(v);
-            }
             return false;
         }
 
@@ -440,7 +420,7 @@ private readonly int m_value;
         /// <param name="other">Handle to check</param>
         /// <returns>True if equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(CsSource other)
+        public bool Equals(CS_Source other)
         {
             return m_value == other.m_value;
         }
@@ -462,7 +442,7 @@ private readonly int m_value;
         /// <param name="rhs">Right Hand Side</param>
         /// <returns>true if equal</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(CsSource lhs, CsSource rhs)
+        public static bool operator ==(CS_Source lhs, CS_Source rhs)
         {
             return lhs.m_value == rhs.m_value;
         }
@@ -473,7 +453,7 @@ private readonly int m_value;
         /// <param name="lhs">Left Hand Side</param>
         /// <param name="rhs">Right Hand Side</param>
         /// <returns>true if not equal</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(CsSource lhs, CsSource rhs)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(CS_Source lhs, CS_Source rhs)
         {
             return lhs.m_value != rhs.m_value;
         }

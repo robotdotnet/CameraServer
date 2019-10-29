@@ -8,7 +8,7 @@ namespace FRC.CameraServer.Interop
     /// <summary>
     /// CS Bool for interop
     /// </summary>
-    public readonly struct CsBool
+    public readonly ref struct CS_Bool
     {
         private readonly int m_value;
 
@@ -16,7 +16,7 @@ namespace FRC.CameraServer.Interop
         /// Creates an CS Bool from an int
         /// </summary>
         /// <param name="value">value</param>
-        public CsBool(int value)
+        public CS_Bool(int value)
         {
             this.m_value = value;
         }
@@ -25,7 +25,7 @@ namespace FRC.CameraServer.Interop
         /// Creates an CS Bool from a bool
         /// </summary>
         /// <param name="value"></param>
-        public CsBool(bool value)
+        public CS_Bool(bool value)
         {
             this.m_value = value ? 1 : 0;
         }
@@ -43,16 +43,16 @@ namespace FRC.CameraServer.Interop
         /// Converts a bool to an CS Bool
         /// </summary>
         /// <param name="value">bool balue</param>
-        public static implicit operator CsBool(bool value)
+        public static implicit operator CS_Bool(bool value)
         {
-            return new CsBool(value);
+            return new CS_Bool(value);
         }
     }
 
     /// <summary>
     /// CS Status for interop
     /// </summary>
-    public readonly struct CsStatus
+    public readonly ref struct CS_Status
     {
         private readonly int m_value;
 
@@ -60,7 +60,7 @@ namespace FRC.CameraServer.Interop
         /// Creates a CS Status from an int
         /// </summary>
         /// <param name="value">value</param>
-        public CsStatus(int value)
+        public CS_Status(int value)
         {
             this.m_value = value;
         }
@@ -82,9 +82,52 @@ namespace FRC.CameraServer.Interop
         /// Converts a int to an CS Status
         /// </summary>
         /// <param name="value">int value</param>
-        public static implicit operator CsStatus(int value)
+        public static implicit operator CS_Status(int value)
         {
-            return new CsStatus(value);
+            return new CS_Status(value);
         }
+    }
+
+    public unsafe struct CS_VideoMode
+    {
+        public int pixelFormat;
+        public int width;
+        public int height;
+        public int fps;
+
+    }
+
+    public unsafe ref struct CS_Event
+    {
+        public EventKind kind;
+        public CS_Source source;
+        public CS_Sink sink;
+        public byte* name;
+        public CS_VideoMode mode;
+        public CS_Property property;
+        public PropertyKind propertyKind;
+        public int value;
+        public byte* valueStr;
+    }
+
+    public unsafe ref struct CS_UsbCameraInfo
+    {
+        public int dev;
+        public byte* path;
+        public byte* name;
+        public int otherPathsCount;
+        public byte** otherPaths;
+        public int vendorId;
+        public int productId;
+    }
+
+    public unsafe struct CS_RawFrame
+    {
+        public char* data;
+        public int dataLength;
+        public int pixelFormat;
+        public int width;
+        public int height;
+        public int totalData;
     }
 }
