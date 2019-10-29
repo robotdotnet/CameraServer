@@ -88,22 +88,13 @@ namespace FRC.CameraServer.Interop
         }
     }
 
-    public unsafe struct CS_VideoMode
-    {
-        public int pixelFormat;
-        public int width;
-        public int height;
-        public int fps;
-
-    }
-
     public unsafe ref struct CS_Event
     {
         public EventKind kind;
         public CS_Source source;
         public CS_Sink sink;
         public byte* name;
-        public CS_VideoMode mode;
+        public VideoMode mode;
         public CS_Property property;
         public PropertyKind propertyKind;
         public int value;

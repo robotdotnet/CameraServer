@@ -85,6 +85,11 @@ namespace FRC.CameraServer.Interop
         {
             return lhs.m_value != rhs.m_value;
         }
+
+        public bool IsValid()
+        {
+            return m_value != 0;
+        }
     }
 
     /// <summary>
@@ -177,6 +182,11 @@ namespace FRC.CameraServer.Interop
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(CS_Property lhs, CS_Property rhs)
         {
             return lhs.m_value != rhs.m_value;
+        }
+
+        public bool IsValid()
+        {
+            return m_value.IsValid();
         }
     }
 
@@ -271,6 +281,11 @@ namespace FRC.CameraServer.Interop
         {
             return lhs.m_value != rhs.m_value;
         }
+
+        public readonly bool IsValid()
+        {
+            return m_value.IsValid();
+        }
     }
 
     /// <summary>
@@ -364,6 +379,11 @@ namespace FRC.CameraServer.Interop
         {
             return lhs.m_value != rhs.m_value;
         }
+
+        public readonly bool IsValid()
+        {
+            return m_value.IsValid();
+        }
     }
 
     /// <summary>
@@ -456,6 +476,11 @@ namespace FRC.CameraServer.Interop
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(CS_Source lhs, CS_Source rhs)
         {
             return lhs.m_value != rhs.m_value;
+        }
+
+        public readonly bool IsValid()
+        {
+            return m_value.IsValid();
         }
     }
 }

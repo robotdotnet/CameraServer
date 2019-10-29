@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -116,7 +118,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var retVal = m_cscore.CS_GetPropertyKind(property, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
 
             return retVal;
         }
@@ -125,7 +127,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var buf = m_cscore.CS_GetPropertyName(property, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
 
             string ret = UTF8String.ReadUTF8String(buf);
             m_cscore.CS_FreeString(buf);
@@ -137,7 +139,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_GetProperty(property, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret;
         }
 
@@ -145,7 +147,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_GetPropertyMin(property, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret;
         }
 
@@ -153,7 +155,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_GetPropertyMax(property, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret;
         }
 
@@ -161,7 +163,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_GetPropertyStep(property, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret;
         }
 
@@ -169,7 +171,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_GetPropertyDefault(property, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret;
         }
 
@@ -177,12 +179,19 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var buf = m_cscore.CS_GetStringProperty(property, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
 
             string ret = UTF8String.ReadUTF8String(buf);
             m_cscore.CS_FreeString(buf);
             return ret;
 
+        }
+
+        public static unsafe void SetProperty(CS_Property property, int value)
+        {
+            int status = 0;
+            m_cscore.CS_SetProperty(property, value, &status);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe void SetStringProperty(CS_Property property, ReadOnlySpan<char> value)
@@ -196,7 +205,7 @@ namespace FRC.CameraServer.Interop
                     Encoding.UTF8.GetBytes(p, value.Length, d, dLen);
                     int status = 0;
                     m_cscore.CS_SetStringProperty(property, d, &status);
-                    CheckStatus(status, status != 0);
+                    CheckStatus(status, status == 0);
                 }
             }
         }
@@ -206,7 +215,7 @@ namespace FRC.CameraServer.Interop
             int status = 0;
             int count = 0;
             byte** values = m_cscore.CS_GetEnumPropertyChoices(property, &count, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             string[] toRet = new string[count];
             for (int i = 0; i< toRet.Length; i++)
             {
@@ -232,7 +241,7 @@ namespace FRC.CameraServer.Interop
                     Encoding.UTF8.GetBytes(p, name.Length, d, dLen);
                     int status = 0;
                     var ret = m_cscore.CS_CreateUsbCameraDev(d, dev, &status);
-                    CheckStatus(status, status != 0);
+                    CheckStatus(status, status == 0);
                     return ret;
                 }
             }
@@ -264,7 +273,7 @@ namespace FRC.CameraServer.Interop
                     Encoding.UTF8.GetBytes(p, path.Length, pp, pLen);
                     int status = 0;
                     var ret = m_cscore.CS_CreateUsbCameraPath(d, pp, &status);
-                    CheckStatus(status, status != 0);
+                    CheckStatus(status, status == 0);
                     return ret;
                 }
             }
@@ -296,7 +305,7 @@ namespace FRC.CameraServer.Interop
                     Encoding.UTF8.GetBytes(p, path.Length, pp, pLen);
                     int status = 0;
                     var ret = m_cscore.CS_CreateHttpCamera(d, pp, kind, &status);
-                    CheckStatus(status, status != 0);
+                    CheckStatus(status, status == 0);
                     return ret;
                 }
             }
@@ -307,7 +316,7 @@ namespace FRC.CameraServer.Interop
             int status = 0;
             CS_RawFrame localFrame = rawImage;
             var ret = m_cscore.CS_GrabRawSinkFrame(sink, &localFrame, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             rawImage = localFrame;
             return ret;
         }
@@ -317,7 +326,7 @@ namespace FRC.CameraServer.Interop
             int status = 0;
             CS_RawFrame localFrame = rawImage;
             var ret = m_cscore.CS_GrabRawSinkFrameTimeout(sink, &localFrame, timeout, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             rawImage = localFrame;
             return ret;
         }
@@ -338,13 +347,13 @@ namespace FRC.CameraServer.Interop
                     Encoding.UTF8.GetBytes(p, name.Length, d, dLen);
                     int status = 0;
                     var ret = m_cscore.CS_CreateRawSink(d, &status);
-                    CheckStatus(status, status != 0);
+                    CheckStatus(status, status == 0);
                     return ret;
                 }
             }
         }
 
-        public static unsafe CS_Source CreateRawSource(ReadOnlySpan<char> name, CS_VideoMode mode)
+        public static unsafe CS_Source CreateRawSource(ReadOnlySpan<char> name, VideoMode mode)
         {
             if (name.IsEmpty)
             {
@@ -360,7 +369,7 @@ namespace FRC.CameraServer.Interop
                     Encoding.UTF8.GetBytes(p, name.Length, d, dLen);
                     int status = 0;
                     var ret = m_cscore.CS_CreateRawSource(d, &mode, &status);
-                    CheckStatus(status, status != 0);
+                    CheckStatus(status, status == 0);
                     return ret;
                 }
             }
@@ -370,14 +379,14 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             m_cscore.CS_PutRawSourceFrame(source, &rawFrame, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe SourceKind GetSourceKind(CS_Source source)
         {
             int status = 0;
             var ret = m_cscore.CS_GetSourceKind(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret;
         }
 
@@ -385,7 +394,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var buf = m_cscore.CS_GetSourceName(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
 
             string ret = UTF8String.ReadUTF8String(buf);
             m_cscore.CS_FreeString(buf);
@@ -396,7 +405,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var buf = m_cscore.CS_GetSourceDescription(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
 
             string ret = UTF8String.ReadUTF8String(buf);
             m_cscore.CS_FreeString(buf);
@@ -407,7 +416,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_GetSourceLastFrameTime(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret;
         }
 
@@ -415,14 +424,14 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             m_cscore.CS_SetSourceConnectionStrategy(source, strategy, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe bool IsSourceConnected(CS_Source source)
         {
             int status = 0;
             var ret = m_cscore.CS_IsSourceConnected(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret.Get();
         }
 
@@ -430,7 +439,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_IsSourceEnabled(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret.Get();
         }
 
@@ -450,18 +459,18 @@ namespace FRC.CameraServer.Interop
                     Encoding.UTF8.GetBytes(p, name.Length, d, dLen);
                     int status = 0;
                     var ret = m_cscore.CS_GetSourceProperty(source, d, &status);
-                    CheckStatus(status, status != 0);
+                    CheckStatus(status, status == 0);
                     return ret;
                 }
             }
         }
 
-        public static unsafe CS_Property[] CS_EnumerateSourceProperties(CS_Source source)
+        public static unsafe CS_Property[] EnumerateSourceProperties(CS_Source source)
         {
             int status = 0;
             int count = 0;
             CS_Property* values = m_cscore.CS_EnumerateSourceProperties(source, &count, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             CS_Property[] toRet = new CS_Property[count];
             for (int i = 0; i < toRet.Length; i++)
             {
@@ -471,20 +480,20 @@ namespace FRC.CameraServer.Interop
             return toRet;
         }
 
-        public static unsafe void GetSourceVideoMode(CS_Source source, out CS_VideoMode videoMode)
+        public static unsafe VideoMode GetSourceVideoMode(CS_Source source)
         {
             int status = 0;
-            CS_VideoMode mode;
+            VideoMode mode;
             m_cscore.CS_GetSourceVideoMode(source, &mode, &status);
-            CheckStatus(status, status != 0);
-            videoMode = mode;
+            CheckStatus(status, status == 0);
+            return mode;
         }
 
-        public static unsafe bool SetSourceVideoMode(CS_Source source, CS_VideoMode videoMode)
+        public static unsafe bool SetSourceVideoMode(CS_Source source, VideoMode videoMode)
         {
             int status = 0;
             var ret = m_cscore.CS_SetSourceVideoMode(source, &videoMode, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret.Get();
         }
 
@@ -492,7 +501,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_SetSourceVideoModeDiscrete(source, pixelFormat, width, height, fps, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret.Get();
         }
 
@@ -500,21 +509,21 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_SetSourcePixelFormat(source, pixelFormat, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret.Get();
         }
         public static unsafe bool SetSourceResolution(CS_Source source, int width, int height)
         {
             int status = 0;
             var ret = m_cscore.CS_SetSourceResolution(source, width, height, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret.Get();
         }
         public static unsafe bool SetSourceFPS(CS_Source source, int fps)
         {
             int status = 0;
             var ret = m_cscore.CS_SetSourceFPS(source, fps, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret.Get();
         }
 
@@ -534,7 +543,7 @@ namespace FRC.CameraServer.Interop
                     Encoding.UTF8.GetBytes(p, config.Length, d, dLen);
                     int status = 0;
                     var ret = m_cscore.CS_SetSourceConfigJson(source, d, &status);
-                    CheckStatus(status, status != 0);
+                    CheckStatus(status, status == 0);
                     return ret.Get();
                 }
             }
@@ -544,20 +553,20 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var buf = m_cscore.CS_GetSourceConfigJson(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
 
             string ret = UTF8String.ReadUTF8String(buf);
             m_cscore.CS_FreeString(buf);
             return ret;
         }
 
-        public static unsafe CS_VideoMode[] EnumerateSourceVideoModes(CS_Source source)
+        public static unsafe VideoMode[] EnumerateSourceVideoModes(CS_Source source)
         {
             int status = 0;
             int count = 0;
-            CS_VideoMode* values = m_cscore.CS_EnumerateSourceVideoModes(source, &count, &status);
-            CheckStatus(status, status != 0);
-            CS_VideoMode[] toRet = new CS_VideoMode[count];
+            VideoMode* values = m_cscore.CS_EnumerateSourceVideoModes(source, &count, &status);
+            CheckStatus(status, status == 0);
+            VideoMode[] toRet = new VideoMode[count];
             for (int i = 0; i < toRet.Length; i++)
             {
                 toRet[i] = values[i];
@@ -571,7 +580,7 @@ namespace FRC.CameraServer.Interop
             int status = 0;
             int count = 0;
             CS_Sink* values = m_cscore.CS_EnumerateSourceSinks(source, &count, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             CS_Sink[] toRet = new CS_Sink[count];
             for (int i = 0; i < toRet.Length; i++)
             {
@@ -585,7 +594,7 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_CopySource(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret;
         }
 
@@ -593,21 +602,21 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             m_cscore.CS_ReleaseSource(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe void SetCameraBrightness(CS_Source source, int brightness)
         {
             int status = 0;
             m_cscore.CS_SetCameraBrightness(source, brightness, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe int GetCameraBrightness(CS_Source source)
         {
             int status = 0;
             var ret = m_cscore.CS_GetCameraBrightness(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret;
         }
 
@@ -615,49 +624,49 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             m_cscore.CS_SetCameraWhiteBalanceAuto(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe void SetCameraWhiteBalanceHoldCurrent(CS_Source source)
         {
             int status = 0;
             m_cscore.CS_SetCameraWhiteBalanceHoldCurrent(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe void SetCameraWhiteBalanceManual(CS_Source source, int value)
         {
             int status = 0;
             m_cscore.CS_SetCameraWhiteBalanceManual(source, value, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe void SetCameraExposureAuto(CS_Source source)
         {
             int status = 0;
             m_cscore.CS_SetCameraExposureAuto(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe void SetCameraExposureHoldCurrent(CS_Source source)
         {
             int status = 0;
             m_cscore.CS_SetCameraExposureHoldCurrent(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe void SetCameraExposureManual(CS_Source source, int value)
         {
             int status = 0;
             m_cscore.CS_SetCameraExposureManual(source, value, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
         }
 
         public static unsafe string GetUsbCameraPath(CS_Source source)
         {
             int status = 0;
             var buf = m_cscore.CS_GetUsbCameraPath(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
 
             string ret = UTF8String.ReadUTF8String(buf);
             m_cscore.CS_FreeString(buf);
@@ -668,10 +677,144 @@ namespace FRC.CameraServer.Interop
         {
             int status = 0;
             var ret = m_cscore.CS_GetHttpCameraKind(source, &status);
-            CheckStatus(status, status != 0);
+            CheckStatus(status, status == 0);
             return ret;
         }
 
-        
+        public static unsafe SinkKind GetSinkKind(CS_Sink sink)
+        {
+            int status = 0;
+            var ret = m_cscore.CS_GetSinkKind(sink, &status);
+            CheckStatus(status, status == 0);
+            return ret;
+        }
+
+        public static unsafe string GetSinkName(CS_Sink sink)
+        {
+            int status = 0;
+            var buf = m_cscore.CS_GetSinkName(sink, &status);
+            CheckStatus(status, status == 0);
+
+            string ret = UTF8String.ReadUTF8String(buf);
+            m_cscore.CS_FreeString(buf);
+            return ret;
+        }
+
+        public static unsafe string GetSinkDescription(CS_Sink sink)
+        {
+            int status = 0;
+            var buf = m_cscore.CS_GetSinkDescription(sink, &status);
+            CheckStatus(status, status == 0);
+
+            string ret = UTF8String.ReadUTF8String(buf);
+            m_cscore.CS_FreeString(buf);
+            return ret;
+        }
+
+        public static unsafe CS_Source GetSinkSource(CS_Sink sink)
+        {
+            int status = 0;
+            var ret = m_cscore.CS_GetSinkSource(sink, &status);
+            CheckStatus(status, status == 0);
+            return ret;
+        }
+
+        public static unsafe void SetSinkSource(CS_Sink sink, CS_Source source)
+        {
+            int status = 0;
+            m_cscore.CS_SetSinkSource(sink, source,&status);
+            CheckStatus(status, status == 0);
+        }
+
+        public static unsafe CS_Property GetSinkSourceProperty(CS_Sink sink, ReadOnlySpan<char> name)
+        {
+            if (name.IsEmpty)
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Cannot have an empty name");
+            }
+
+            fixed (char* p = name)
+            {
+                var dLen = Encoding.UTF8.GetByteCount(p, name.Length);
+                Span<byte> dSpan = dLen <= 256 ? stackalloc byte[dLen == 0 ? 1 : dLen] : new byte[dLen];
+                fixed (byte* d = dSpan)
+                {
+                    Encoding.UTF8.GetBytes(p, name.Length, d, dLen);
+                    int status = 0;
+                    var ret = m_cscore.CS_GetSinkSourceProperty(sink, d, &status);
+                    CheckStatus(status, status == 0);
+                    return ret;
+                }
+            }
+        }
+
+        public static unsafe void ReleaseSink(CS_Sink sink)
+        {
+            int status = 0;
+            m_cscore.CS_ReleaseSink(sink, &status);
+            CheckStatus(status, status == 0);
+        }
+
+
+        public static unsafe CS_Source[] EnumerateSources()
+        {
+            int status = 0;
+            int count = 0;
+            CS_Source* values = m_cscore.CS_EnumerateSources(&count, &status);
+            CheckStatus(status, status == 0);
+            CS_Source[] toRet = new CS_Source[count];
+            for (int i = 0; i < toRet.Length; i++)
+            {
+                toRet[i] = values[i];
+            }
+            m_cscore.CS_ReleaseEnumeratedSources(values, count);
+            return toRet;
+        }
+
+        public static unsafe CS_Sink[] EnumerateSinks()
+        {
+            int status = 0;
+            int count = 0;
+            CS_Sink* values = m_cscore.CS_EnumerateSinks(&count, &status);
+            CheckStatus(status, status == 0);
+            CS_Sink[] toRet = new CS_Sink[count];
+            for (int i = 0; i < toRet.Length; i++)
+            {
+                toRet[i] = values[i];
+            }
+            m_cscore.CS_ReleaseEnumeratedSinks(values, count);
+            return toRet;
+        }
+
+        private static Dictionary<CS_Listener, CsListenerEvent> listenerMap = new Dictionary<CS_Listener, CsListenerEvent>();
+        private static object lockObject = new object();
+
+        public static unsafe CS_Listener AddListener(VideoEventDelegate videoEvent, EventKind mask, bool immediateNotify)
+        {
+            CsListenerEvent listenerEvent = (void* data, CS_Event* csEvent) =>
+            {
+                videoEvent(new RefVideoEvent(csEvent));
+            };
+            IntPtr listenerEventPtr = Marshal.GetFunctionPointerForDelegate(listenerEvent);
+            int status = 0;
+            var listener = m_cscore.CS_AddListener(null, listenerEventPtr, (int)mask, immediateNotify ? 1 : 0, &status);
+            CheckStatus(status, status == 0);
+            lock (lockObject)
+            {
+                listenerMap.Add(listener, listenerEvent);
+            }
+            return listener;
+        }
+
+        public static unsafe void RemoveListener(CS_Listener listener)
+        {
+            int status = 0;
+            m_cscore.CS_RemoveListener(listener, &status);
+            lock (lockObject)
+            {
+                listenerMap.Remove(listener);
+            }
+            CheckStatus(status, status == 0);
+        }
     }
 }

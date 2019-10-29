@@ -2,11 +2,14 @@ using System;
 
 namespace FRC.CameraServer.Interop
 {
+    public unsafe delegate void CsListenerEvent(void* data, CS_Event* csEvent);
+
     public unsafe interface ICsCore
     {
         unsafe PropertyKind CS_GetPropertyKind(CS_Property property, int* status);
         unsafe byte* CS_GetPropertyName(CS_Property property, int* status);
         unsafe int CS_GetProperty(CS_Property property, int* status);
+        void CS_SetProperty(CS_Property property, int value, int* status);
         int CS_GetPropertyMin(CS_Property property, int* status);
         int CS_GetPropertyMax(CS_Property property, int* status);
         int CS_GetPropertyStep(CS_Property property, int* status);
@@ -48,7 +51,7 @@ namespace FRC.CameraServer.Interop
         void CS_PutRawSourceFrame(CS_Source source, CS_RawFrame* image,
                           int* status);
 
-        CS_Source CS_CreateRawSource(byte* name, CS_VideoMode* mode,
+        CS_Source CS_CreateRawSource(byte* name, VideoMode* mode,
                                      int* status);
 
         /**
@@ -68,9 +71,9 @@ namespace FRC.CameraServer.Interop
                                          int* status);
         CS_Property* CS_EnumerateSourceProperties(CS_Source source, int* count,
                                                   int* status);
-        void CS_GetSourceVideoMode(CS_Source source, CS_VideoMode* mode,
+        void CS_GetSourceVideoMode(CS_Source source, VideoMode* mode,
                                    int* status);
-        CS_Bool CS_SetSourceVideoMode(CS_Source source, CS_VideoMode* mode,
+        CS_Bool CS_SetSourceVideoMode(CS_Source source, VideoMode* mode,
                                       int* status);
         CS_Bool CS_SetSourceVideoModeDiscrete(CS_Source source,
                                               PixelFormat pixelFormat,
@@ -85,7 +88,7 @@ namespace FRC.CameraServer.Interop
         CS_Bool CS_SetSourceConfigJson(CS_Source source, byte* config,
                                        int* status);
         byte* CS_GetSourceConfigJson(CS_Source source, int* status);
-        CS_VideoMode* CS_EnumerateSourceVideoModes(CS_Source source, int* count,
+        VideoMode* CS_EnumerateSourceVideoModes(CS_Source source, int* count,
                                                    int* status);
         CS_Sink* CS_EnumerateSourceSinks(CS_Source source, int* count,
                                          int* status);
@@ -203,6 +206,7 @@ namespace FRC.CameraServer.Interop
          */
         void CS_SetListenerOnStart(IntPtr onStart, void* data);
         void CS_SetListenerOnExit(IntPtr onEnd, void* data);
+
         CS_Listener CS_AddListener(
             void* data, IntPtr callback,
     int eventMask, int immediateNotify, int* status);
@@ -260,7 +264,7 @@ namespace FRC.CameraServer.Interop
         void CS_FreeHttpCameraUrls(byte** urls, int count);
 
         void CS_FreeEnumeratedProperties(CS_Property* properties, int count);
-        void CS_FreeEnumeratedVideoModes(CS_VideoMode* modes, int count);
+        void CS_FreeEnumeratedVideoModes(VideoMode* modes, int count);
 
         byte* CS_GetHostname();
 
