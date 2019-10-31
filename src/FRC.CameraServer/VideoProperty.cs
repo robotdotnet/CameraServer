@@ -11,7 +11,6 @@ namespace FRC.CameraServer
     public class VideoProperty
     {
         internal CS_Property m_handle;
-        private PropertyKind m_kind;
 
         /// <summary>
         /// The name of the property
@@ -21,32 +20,32 @@ namespace FRC.CameraServer
         /// <summary>
         /// The kind of property
         /// </summary>
-        public PropertyKind Kind => m_kind;
+        public PropertyKind Kind { get; }
 
         /// <summary>
         /// If the property is valid
         /// </summary>
-        public bool IsValid => m_kind != PropertyKind.None;
+        public bool IsValid => Kind != PropertyKind.None;
 
         /// <summary>
         /// If the property is bool type
         /// </summary>
-        public bool IsBoolean => m_kind == PropertyKind.Boolean;
+        public bool IsBoolean => Kind == PropertyKind.Boolean;
 
         /// <summary>
         /// If the property is integer type
         /// </summary>
-        public bool IsInteger => m_kind == PropertyKind.Integer;
+        public bool IsInteger => Kind == PropertyKind.Integer;
 
         /// <summary>
         /// If the property is string type
         /// </summary>
-        public bool IsString => m_kind == PropertyKind.String;
+        public bool IsString => Kind == PropertyKind.String;
 
         /// <summary>
         /// If the property is enum type
         /// </summary>
-        public bool IsEnum => m_kind == PropertyKind.Enum;
+        public bool IsEnum => Kind == PropertyKind.Enum;
 
         /// <summary>
         /// Gets the current value of the property
@@ -133,13 +132,13 @@ namespace FRC.CameraServer
         internal VideoProperty(CS_Property handle)
         {
             m_handle = handle;
-            m_kind = CsCore.GetPropertyKind(m_handle);
+            Kind = CsCore.GetPropertyKind(m_handle);
         }
 
         internal VideoProperty(CS_Property handle, PropertyKind kind)
         {
             m_handle = handle;
-            m_kind = kind;
+            Kind = kind;
         }
     }
 

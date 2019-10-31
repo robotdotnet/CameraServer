@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Native desktop libraries for CameraServer</Description>
+    <Copyright>Copyright 2018 RobotDotNet</Copyright>
+    <AssemblyTitle>FRC CameraServer.DesktopLibraries</AssemblyTitle>
+    <Title>FRC CameraServer.DesktopLibraries</Title>
+    <VersionPrefix>4.0.0</VersionPrefix>
+    <Authors>RobotDotNet</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>FRC.CameraServer.DesktopLibraries</AssemblyName>
+    <PackageId>FRC.CameraServer.DesktopLibraries</PackageId>
+    <PackageTags>WPILib;FRC;FIRST;RoboRio</PackageTags>
+    <PackageProjectUrl>https://github.com/robotdotnet/CameraServer</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/robotdotnet/CameraServer/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/robotdotnet/CameraServer</RepositoryUrl>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="libraries\windows\x86\cscorejni.dll" />
+    <None Remove="libraries\windows\x86-64\cscorejni.dll" />
+    <!--
+    <None Remove="libraries\linux\raspbian\libcscorejni.so" />
+    <None Remove="libraries\linux\x86-64\libcscorejni.so" />
+    <None Remove="libraries\osx\x86-64\libcscorejni.dylib" />
+    -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="libraries\windows\x86\cscorejni.dll" />
+    <EmbeddedResource Include="libraries\windows\x86-64\cscorejni.dll" />
+    <!--
+    <EmbeddedResource Include="libraries\linux\raspbian\libcscorejni.so" />
+    <EmbeddedResource Include="libraries\linux\x86-64\libcscorejni.so" />
+    <EmbeddedResource Include="libraries\osx\x86-64\libcscorejni.dylib" />
+    -->
+  </ItemGroup>
+</Project>

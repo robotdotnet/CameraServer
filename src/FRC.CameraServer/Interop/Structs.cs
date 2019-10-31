@@ -114,7 +114,7 @@ namespace FRC.CameraServer.Interop
 
     public unsafe struct CS_RawFrame
     {
-        public char* data;
+        public byte* data;
         public int dataLength;
         public int pixelFormat;
         public int width;

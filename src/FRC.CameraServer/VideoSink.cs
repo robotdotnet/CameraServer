@@ -124,6 +124,16 @@ namespace FRC.CameraServer
             }
         }
 
+        public bool SetConfigJson(string config)
+        {
+            return CsCore.SetSinkConfigJson(Handle, config.AsSpan());
+        }
+
+        public string GetConfigJson()
+        {
+            return CsCore.GetSinkConfigJson(Handle);
+        }
+
         /// <summary>
         /// Gets a VideoProperty from this sink
         /// </summary>

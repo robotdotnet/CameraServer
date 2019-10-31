@@ -121,6 +121,16 @@ namespace FRC.CameraServer
             }
         }
 
+        public ConnectionStrategy ConnectionStrategy
+        {
+            set
+            {
+                CsCore.SetSourceConnectionStrategy(Handle, value);
+            }
+        }
+
+        public bool Enabled => CsCore.IsSourceEnabled(Handle);
+
         /// <summary>
         /// Gets a VideoProperty from this sink
         /// </summary>
@@ -150,16 +160,16 @@ namespace FRC.CameraServer
         /// Gets the current video mode
         /// </summary>
         /// <returns>The current video mode</returns>
-        public VideoMode GetVideoMode() => CsCore.GetSourceVideoMode(Handle);
-
-        /// <summary>
-        /// Sets the video mode
-        /// </summary>
-        /// <param name="mode">The video mode to set</param>
-        /// <returns>True on success</returns>
-        public bool SetVideoMode(VideoMode mode)
+        public VideoMode VideoMode
         {
-            return CsCore.SetSourceVideoMode(Handle, mode);
+            get
+            {
+                return CsCore.GetSourceVideoMode(Handle);
+            }
+            set
+            {
+                CsCore.SetSourceVideoMode(Handle, value);
+            }
         }
 
         /// <summary>
@@ -204,6 +214,32 @@ namespace FRC.CameraServer
         public bool SetFPS(int fps)
         {
             return CsCore.SetSourceFPS(Handle, fps);
+        }
+
+        public bool SetConfigJson(string config)
+        {
+            return CsCore.SetSourceConfigJson(Handle, config.AsSpan());
+        }
+
+        public string GetConfigJson()
+        {
+            return CsCore.GetSourceConfigJson(Handle);
+        }
+
+        public double ActualFPS
+        {
+            get
+            {
+                return CsCore.GetTelemetryAverageValue(Handle, TelemetryKind.FramesReceived);
+            }
+        }
+
+        public double ActualDataRate
+        {
+            get
+            {
+                return CsCore.GetTelemetryAverageValue(Handle, TelemetryKind.BytesReceived);
+            }
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26114.2
@@ -6,6 +6,14 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2F23A487-14AD-4828-8A53-BAD4B97C23C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC.CameraServer", "src\FRC.CameraServer\FRC.CameraServer.csproj", "{D910AC21-9EC3-47A2-8D6B-419E33ECF3FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC.CameraServer.DesktopLibraries", "src\FRC.CameraServer.DesktopLibraries\FRC.CameraServer.DesktopLibraries.csproj", "{6B7C26CE-64C8-4E1D-9793-3502F9E0F2D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC.CameraServer.Dev", "src\FRC.CameraServer.Dev\FRC.CameraServer.Dev.csproj", "{19220BC0-7D1F-4270-BECE-FEB0C93719AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC.CameraServer.EMGU", "src\FRC.CameraServer.EMGU\FRC.CameraServer.EMGU.csproj", "{7B72F64D-61EC-434C-A1C5-057C3993D0E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC.CameraServer.OpenCvSharp", "src\FRC.CameraServer.OpenCvSharp\FRC.CameraServer.OpenCvSharp.csproj", "{B53DAEFE-FA06-44FA-8D76-52AE851FA5C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,11 +25,31 @@ Global
 		{D910AC21-9EC3-47A2-8D6B-419E33ECF3FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D910AC21-9EC3-47A2-8D6B-419E33ECF3FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D910AC21-9EC3-47A2-8D6B-419E33ECF3FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B7C26CE-64C8-4E1D-9793-3502F9E0F2D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B7C26CE-64C8-4E1D-9793-3502F9E0F2D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B7C26CE-64C8-4E1D-9793-3502F9E0F2D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B7C26CE-64C8-4E1D-9793-3502F9E0F2D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19220BC0-7D1F-4270-BECE-FEB0C93719AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19220BC0-7D1F-4270-BECE-FEB0C93719AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19220BC0-7D1F-4270-BECE-FEB0C93719AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19220BC0-7D1F-4270-BECE-FEB0C93719AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B72F64D-61EC-434C-A1C5-057C3993D0E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B72F64D-61EC-434C-A1C5-057C3993D0E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B72F64D-61EC-434C-A1C5-057C3993D0E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B72F64D-61EC-434C-A1C5-057C3993D0E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B53DAEFE-FA06-44FA-8D76-52AE851FA5C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B53DAEFE-FA06-44FA-8D76-52AE851FA5C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B53DAEFE-FA06-44FA-8D76-52AE851FA5C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B53DAEFE-FA06-44FA-8D76-52AE851FA5C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D910AC21-9EC3-47A2-8D6B-419E33ECF3FA} = {2F23A487-14AD-4828-8A53-BAD4B97C23C7}
+		{6B7C26CE-64C8-4E1D-9793-3502F9E0F2D2} = {2F23A487-14AD-4828-8A53-BAD4B97C23C7}
+		{19220BC0-7D1F-4270-BECE-FEB0C93719AA} = {2F23A487-14AD-4828-8A53-BAD4B97C23C7}
+		{7B72F64D-61EC-434C-A1C5-057C3993D0E2} = {2F23A487-14AD-4828-8A53-BAD4B97C23C7}
+		{B53DAEFE-FA06-44FA-8D76-52AE851FA5C6} = {2F23A487-14AD-4828-8A53-BAD4B97C23C7}
 	EndGlobalSection
 EndGlobal

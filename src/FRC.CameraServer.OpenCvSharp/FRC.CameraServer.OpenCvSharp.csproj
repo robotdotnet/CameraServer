@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenCvSharp4" Version="4.1.1.20191026" />
+    <PackageReference Include="System.Memory" Version="4.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FRC.CameraServer\FRC.CameraServer.csproj" />
+  </ItemGroup>
+
+</Project>
