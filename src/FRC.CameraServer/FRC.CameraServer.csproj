@@ -33,7 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nullable" Version="1.1.0">
+    <PackageReference Include="Nullable" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FRC.Utilities" Version="[0.0.3-beta]" />
+    <PackageReference Include="FRC.Utilities" Version="3.0.0" />
   </ItemGroup>
 
 

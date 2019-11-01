@@ -13,7 +13,7 @@ namespace FRC.CameraServer.Interop
 {
     public static class CsCore 
     {
-        private static ICsCore m_cscore;
+        private readonly static ICsCore m_cscore;
 
         private unsafe readonly static char* NullTerminator;
 
@@ -41,7 +41,8 @@ namespace FRC.CameraServer.Interop
                     if (File.Exists(file))
                     {
                         nativeLoader.LoadNativeLibrary<ICsCore>(file, true);
-                        m_cscore = nativeLoader.LoadNativeInterface<ICsCore>();
+                        var cscore2 = nativeLoader.LoadNativeInterface<ICsCore>();
+                        m_cscore = cscore2 ?? throw new Exception("Failed to load native interface?");
                         return;
                     }
                 }
@@ -60,50 +61,27 @@ namespace FRC.CameraServer.Interop
             nativeLoader.AddLibraryLocation(OsType.roboRIO, "ntcore");
 
             nativeLoader.LoadNativeLibraryFromReflectedAssembly("FRC.CameraServer.DesktopLibraries");
-            m_cscore = nativeLoader.LoadNativeInterface<ICsCore>();
+            var cscore = nativeLoader.LoadNativeInterface<ICsCore>();
+            m_cscore = cscore ?? throw new Exception("Failed to load native interface?");
         }
-
-        private static Span<T> GetSpanOrBuffer<T>(Span<T> store, int length)
-        {
-            return store.Length >= length ? store.Slice(0, length) : new T[length];
-        }
-
         
         private static void ThrowStatusException(int status)
         {
             StatusValue s = (StatusValue)status;
             string msg = $"unknown error code={status}";
-            switch(s)
+            msg = s switch
             {
-                case StatusValue.PropertyWriteFailed:
-                    msg = "property write failed";
-                    break;
-                case StatusValue.InvalidHandle:
-                    msg = "invalid handle";
-                    break;
-                case StatusValue.WrongHandleSubtype:
-                    msg = "wrong handle subtype";
-                    break;
-                case StatusValue.InvalidProperty:
-                    msg = "invalid property";
-                    break;
-                case StatusValue.WrongPropertyType:
-                    msg = "wrong property type";
-                    break;
-                case StatusValue.EmptyValue:
-                    msg = "empty value";
-                    break;
-                case StatusValue.BadUrl:
-                    msg = "bad URL";
-                    break;
-                case StatusValue.PropertyReadFailed:
-                    msg = "read failed";
-                    break;
-                case StatusValue.SourceIsDisconnected:
-                    msg = "source is disconnected";
-                    break;
-            }
-            throw new VideoException(msg);
+                StatusValue.PropertyWriteFailed => "property write failed",
+                StatusValue.InvalidHandle => "invalid handle",
+                StatusValue.WrongHandleSubtype => "wrong handle subtype",
+                StatusValue.InvalidProperty => "invalid property",
+                StatusValue.WrongPropertyType => "wrong property type",
+                StatusValue.EmptyValue => "empty value",
+                StatusValue.BadUrl => "bad URL",
+                StatusValue.PropertyReadFailed => "read failed",
+                StatusValue.SourceIsDisconnected => "source is disconnected",
+                _ => throw new VideoException(msg),
+            };
         }
 
         private static void CheckStatus(int status, [DoesNotReturnIf(false)]bool isValid)
@@ -853,8 +831,8 @@ namespace FRC.CameraServer.Interop
             return toRet;
         }
 
-        private static Dictionary<CS_Listener, CsListenerEvent> listenerMap = new Dictionary<CS_Listener, CsListenerEvent>();
-        private static object lockObject = new object();
+        private static readonly Dictionary<CS_Listener, CsListenerEvent> listenerMap = new Dictionary<CS_Listener, CsListenerEvent>();
+        private static readonly object lockObject = new object();
 
         public static unsafe CS_Listener AddListener(VideoEventDelegate videoEvent, EventKind mask, bool immediateNotify)
         {
