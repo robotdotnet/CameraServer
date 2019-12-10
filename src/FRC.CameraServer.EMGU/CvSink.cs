@@ -55,7 +55,7 @@ namespace FRC.CameraServer.EMGU
             ulong rv = CsCore.GrabRawSinkFrameTimeout(Handle, ref frame, timeout);
             if (rv == 0) return 0;
 
-            var format = GetCvFormat((PixelFormat)frame.pixelFormat);
+            var (type, channels) = GetCvFormat((PixelFormat)frame.pixelFormat);
 
             if (dataPtr != frame.data || width != frame.width || height != frame.height || pixelFormat != frame.pixelFormat)
             {
@@ -63,7 +63,7 @@ namespace FRC.CameraServer.EMGU
                 width = frame.width;
                 height = frame.height;
                 pixelFormat = frame.pixelFormat;
-                tmpMat = new Mat(frame.height, frame.width, format.type, format.channels, (IntPtr)frame.data, 0);
+                tmpMat = new Mat(frame.height, frame.width, type, channels, (IntPtr)frame.data, 0);
             }
 
             tmpMat.CopyTo(image);

@@ -68,8 +68,8 @@ namespace FRC.CameraServer.Interop
         private static void ThrowStatusException(int status)
         {
             StatusValue s = (StatusValue)status;
-            string msg = $"unknown error code={status}";
-            msg = s switch
+           
+            var val = s switch
             {
                 StatusValue.PropertyWriteFailed => "property write failed",
                 StatusValue.InvalidHandle => "invalid handle",
@@ -80,8 +80,10 @@ namespace FRC.CameraServer.Interop
                 StatusValue.BadUrl => "bad URL",
                 StatusValue.PropertyReadFailed => "read failed",
                 StatusValue.SourceIsDisconnected => "source is disconnected",
-                _ => throw new VideoException(msg),
+                _ => s.ToString(),
             };
+            string msg = $"unknown error code={val}";
+            throw new VideoException(msg);
         }
 
         private static void CheckStatus(int status, [DoesNotReturnIf(false)]bool isValid)
@@ -836,11 +838,11 @@ namespace FRC.CameraServer.Interop
 
         public static unsafe CS_Listener AddListener(VideoEventDelegate videoEvent, EventKind mask, bool immediateNotify)
         {
-            CsListenerEvent listenerEvent = (void* data, CS_Event* csEvent) =>
+            void listenerEvent(void* data, CS_Event* csEvent)
             {
                 videoEvent(new RefVideoEvent(csEvent));
-            };
-            IntPtr listenerEventPtr = Marshal.GetFunctionPointerForDelegate(listenerEvent);
+            }
+            IntPtr listenerEventPtr = Marshal.GetFunctionPointerForDelegate((CsListenerEvent)listenerEvent);
             int status = 0;
             var listener = m_cscore.CS_AddListener(null, listenerEventPtr, (int)mask, immediateNotify ? 1 : 0, &status);
             CheckStatus(status, status == 0);

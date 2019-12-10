@@ -1,5 +1,5 @@
-﻿using FRC.CameraServer.OpenCvSharp;
-using OpenCvSharp;
+﻿using Emgu.CV;
+using FRC.CameraServer.EMGU;
 using System;
 using System.Threading;
 
@@ -17,7 +17,7 @@ namespace FRC.CameraServer.Dev
             CvSink sink = new CvSink("Sink");
             CvSource source = new CvSource("Source", PixelFormat.GRAY, 320, 240, 30);
 
-            Cv2.NamedWindow("Window");
+            CvInvoke.NamedWindow("Window");
 
             sink.Source = camera;
             server2.Source = source;
@@ -32,9 +32,9 @@ namespace FRC.CameraServer.Dev
                     continue;
                 }
 
-                Cv2.CvtColor(image, gray, ColorConversionCodes.BGR2GRAY);
-                Cv2.ImShow("Window", image);
-                Cv2.WaitKey(1);
+                CvInvoke.CvtColor(image, gray, Emgu.CV.CvEnum.ColorConversion.Bgr2Gray);
+                CvInvoke.Imshow("Window", image);
+                CvInvoke.WaitKey(1);
                 source.PutFrame(gray);
             }
 

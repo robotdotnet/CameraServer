@@ -26,12 +26,14 @@ namespace FRC.CameraServer.EMGU
                 throw new VideoException("Unsupported Image Type");
             }
             var imageType = channels == 1 ? PixelFormat.GRAY : PixelFormat.BGR;
-            CS_RawFrame rawFrame = new CS_RawFrame();
-            rawFrame.data = (byte*)image.DataPointer;
-            rawFrame.width = image.Width;
-            rawFrame.height = image.Height;
-            rawFrame.pixelFormat = (int)imageType;
-            rawFrame.totalData = (int)image.Total * channels;
+            CS_RawFrame rawFrame = new CS_RawFrame
+            {
+                data = (byte*)image.DataPointer,
+                width = image.Width,
+                height = image.Height,
+                pixelFormat = (int)imageType,
+                totalData = (int)image.Total * channels
+            };
             rawFrame.dataLength = rawFrame.totalData;
             CsCore.PutRawSourceFrame(Handle, rawFrame);
         }

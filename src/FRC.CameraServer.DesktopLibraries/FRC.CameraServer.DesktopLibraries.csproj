@@ -20,21 +20,17 @@
 
   <ItemGroup>
     <None Remove="libraries\windows\x86-64\cscorejni.dll" />
-    <!--
     <None Remove="libraries\windows\x86\cscorejni.dll" />
     <None Remove="libraries\linux\raspbian\libcscorejni.so" />
     <None Remove="libraries\linux\x86-64\libcscorejni.so" />
     <None Remove="libraries\osx\x86-64\libcscorejni.dylib" />
-    -->
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="libraries\windows\x86-64\cscorejni.dll" />
-    <!--
     <EmbeddedResource Include="libraries\windows\x86\cscorejni.dll" />
     <EmbeddedResource Include="libraries\linux\raspbian\libcscorejni.so" />
     <EmbeddedResource Include="libraries\linux\x86-64\libcscorejni.so" />
     <EmbeddedResource Include="libraries\osx\x86-64\libcscorejni.dylib" />
-    -->
   </ItemGroup>
 </Project>
