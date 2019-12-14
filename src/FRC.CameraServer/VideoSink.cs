@@ -1,7 +1,10 @@
-﻿using System;
+﻿using FRC.CameraServer.Interop;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
-namespace CSCore
+namespace FRC.CameraServer
 {
     /// <summary>
     /// A sink for video that provides a sequence of frames
@@ -15,18 +18,18 @@ namespace CSCore
         /// <summary>
         /// Gets if the sink is valid
         /// </summary>
-        public bool IsValid => Handle != 0;
+        public bool IsValid => Handle.IsValid();
 
         /// <summary>
         /// Gets the handle associated with this sink
         /// </summary>
-        public int Handle { get; protected set; }
+        public CS_Sink Handle { get; protected set; }
 
         /// <summary>
         /// Creates a new VideoSink
         /// </summary>
         /// <param name="handle">The handle to create from</param>
-        protected internal VideoSink(int handle)
+        protected internal VideoSink(CS_Sink handle)
         {
             Handle = handle;
         }
@@ -36,11 +39,11 @@ namespace CSCore
         /// </summary>
         public void Dispose()
         {
-            if (Handle != 0)
+            if (Handle.IsValid())
             {
-                NativeMethods.ReleaseSink(Handle);
+                CsCore.ReleaseSink(Handle);
             }
-            Handle = 0;
+            Handle = new CS_Sink(0);
         }
 
         /// <summary>
@@ -50,21 +53,23 @@ namespace CSCore
         /// <returns>True if the objects are equal</returns>
         public override bool Equals(object other)
         {
-            if (this == other) return true;
-            VideoSink otherSink = other as VideoSink;
-            return Handle == otherSink?.Handle;
+            if (this is VideoSink vs)
+            {
+                return Handle == vs.Handle;
+            }
+            return false;
         }
 
         /// <summary>
         /// Gets the HashCode for this object
         /// </summary>
         /// <returns>The hashcode (the handle is the hash code)</returns>
-        public override int GetHashCode() => Handle;
+        public override int GetHashCode() => Handle.Get();
 
         /// <summary>
         /// Gets the kind of this sink
         /// </summary>
-        public SinkKind Kind => NativeMethods.GetSinkKind(Handle);
+        public SinkKind Kind => CsCore.GetSinkKind(Handle);
 
         /// <summary>
         /// Gets or sets the name of this sink
@@ -73,7 +78,7 @@ namespace CSCore
         {
             get
             {
-                return NativeMethods.GetSinkName(Handle);
+                return CsCore.GetSinkName(Handle);
             }
             set
             {
@@ -88,7 +93,7 @@ namespace CSCore
         {
             get
             {
-                return NativeMethods.GetSinkDescription(Handle);
+                return CsCore.GetSinkDescription(Handle);
             }
             set
             {
@@ -99,23 +104,34 @@ namespace CSCore
         /// <summary>
         /// Gets or sets the <see cref="VideoSource"/> attached to this sink
         /// </summary>
+        [AllowNull]
         public VideoSource Source
         {
             get
             {
-                return new VideoSource(NativeMethods.GetSinkSource(Handle));
+                return new VideoSource(CsCore.GetSinkSource(Handle));
             }
             set
             {
                 if (value == null)
                 {
-                    NativeMethods.SetSinkSource(Handle, 0);
+                    CsCore.SetSinkSource(Handle, new CS_Source(0));
                 }
                 else
                 {
-                    NativeMethods.SetSinkSource(Handle, value.Handle);
+                    CsCore.SetSinkSource(Handle, value.Handle);
                 }
             }
+        }
+
+        public bool SetConfigJson(string config)
+        {
+            return CsCore.SetSinkConfigJson(Handle, config.AsSpan());
+        }
+
+        public string GetConfigJson()
+        {
+            return CsCore.GetSinkConfigJson(Handle);
         }
 
         /// <summary>
@@ -125,7 +141,7 @@ namespace CSCore
         /// <returns>The property</returns>
         public VideoProperty GetSourceProperty(string name)
         {
-            return new VideoProperty(NativeMethods.GetSinkSourceProperty(Handle, name));
+            return new VideoProperty(CsCore.GetSinkSourceProperty(Handle, name.AsSpan()));
         }
 
         /// <summary>
@@ -134,9 +150,9 @@ namespace CSCore
         /// <returns>A list of all existing sinks</returns>
         public static List<VideoSink> EnumerateSinks()
         {
-            List<int> sinkHandles = NativeMethods.EnumerateSinks();
-            List<VideoSink> sinks = new List<VideoSink>(sinkHandles.Count);
-            foreach(var h in sinkHandles)
+            var sinkHandles = CsCore.EnumerateSinks();
+            List<VideoSink> sinks = new List<VideoSink>(sinkHandles.Length);
+            foreach (var h in sinkHandles)
             {
                 sinks.Add(new VideoSink(h));
             }

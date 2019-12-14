@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CSCore
+namespace FRC.CameraServer
 {
     /// <summary>
     /// Exception raised by the CameraServer

@@ -1,49 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using FRC.CameraServer.Interop;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace CSCore
+namespace FRC.CameraServer
 {
     /// <summary>
     /// Video Properties for sources
     /// </summary>
     public class VideoProperty
     {
-        internal int m_handle;
-        private PropertyKind m_kind;
+        internal CS_Property m_handle;
 
         /// <summary>
         /// The name of the property
         /// </summary>
-        public string Name => NativeMethods.GetPropertyName(m_handle);
+        public string Name => CsCore.GetPropertyName(m_handle);
 
         /// <summary>
         /// The kind of property
         /// </summary>
-        public PropertyKind Kind => m_kind;
+        public PropertyKind Kind { get; }
 
         /// <summary>
         /// If the property is valid
         /// </summary>
-        public bool IsValid => m_kind != PropertyKind.None;
+        public bool IsValid => Kind != PropertyKind.None;
 
         /// <summary>
         /// If the property is bool type
         /// </summary>
-        public bool IsBoolean => m_kind == PropertyKind.Boolean;
+        public bool IsBoolean => Kind == PropertyKind.Boolean;
 
         /// <summary>
         /// If the property is integer type
         /// </summary>
-        public bool IsInteger => m_kind == PropertyKind.Integer;
+        public bool IsInteger => Kind == PropertyKind.Integer;
 
         /// <summary>
         /// If the property is string type
         /// </summary>
-        public bool IsString => m_kind == PropertyKind.String;
+        public bool IsString => Kind == PropertyKind.String;
 
         /// <summary>
         /// If the property is enum type
         /// </summary>
-        public bool IsEnum => m_kind == PropertyKind.Enum;
+        public bool IsEnum => Kind == PropertyKind.Enum;
 
         /// <summary>
         /// Gets the current value of the property
@@ -51,7 +53,7 @@ namespace CSCore
         /// <returns>The integer representation of the property</returns>
         public int Get()
         {
-            return NativeMethods.GetProperty(m_handle);
+            return CsCore.GetProperty(m_handle);
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace CSCore
         /// <param name="value">The integer value to set the property to</param>
         public void Set(int value)
         {
-            NativeMethods.SetProperty(m_handle, value);
+            CsCore.SetProperty(m_handle, value);
         }
 
         /// <summary>
@@ -69,7 +71,7 @@ namespace CSCore
         /// <returns>The minimum value</returns>
         public int GetMin()
         {
-            return NativeMethods.GetPropertyMin(m_handle);
+            return CsCore.GetPropertyMin(m_handle);
         }
 
         /// <summary>
@@ -78,7 +80,7 @@ namespace CSCore
         /// <returns>The maximum value</returns>
         public int GetMax()
         {
-            return NativeMethods.GetPropertyMax(m_handle);
+            return CsCore.GetPropertyMax(m_handle);
         }
 
         /// <summary>
@@ -87,7 +89,7 @@ namespace CSCore
         /// <returns>The step value</returns>
         public int GetStep()
         {
-            return NativeMethods.GetPropertyStep(m_handle);
+            return CsCore.GetPropertyStep(m_handle);
         }
 
         /// <summary>
@@ -96,7 +98,7 @@ namespace CSCore
         /// <returns>The default value</returns>
         public int GetDefault()
         {
-            return NativeMethods.GetPropertyDefault(m_handle);
+            return CsCore.GetPropertyDefault(m_handle);
         }
 
         // String-specific functions
@@ -106,7 +108,7 @@ namespace CSCore
         /// <returns>The string value</returns>
         public string GetString()
         {
-            return NativeMethods.GetStringProperty(m_handle);
+            return CsCore.GetStringProperty(m_handle);
         }
 
         /// <summary>
@@ -115,7 +117,7 @@ namespace CSCore
         /// <param name="value"></param>
         public void SetString(string value)
         {
-            NativeMethods.SetStringProperty(m_handle, value);
+            CsCore.SetStringProperty(m_handle, value.AsSpan());
         }
 
         /// <summary>
@@ -124,19 +126,20 @@ namespace CSCore
         /// <returns>List of property choices</returns>
         public List<string> GetChoices()
         {
-            return NativeMethods.GetEnumPropertyChoices(m_handle);
+            return new List<string>(CsCore.GetEnumPropertyChoices(m_handle));
         }
 
-        internal VideoProperty(int handle)
+        internal VideoProperty(CS_Property handle)
         {
             m_handle = handle;
-            m_kind = NativeMethods.GetPropertyKind(m_handle);
+            Kind = CsCore.GetPropertyKind(m_handle);
         }
 
-        internal VideoProperty(int handle, PropertyKind kind)
+        internal VideoProperty(CS_Property handle, PropertyKind kind)
         {
             m_handle = handle;
-            m_kind = kind;
+            Kind = kind;
         }
     }
+
 }

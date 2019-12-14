@@ -17,19 +17,21 @@ var buildNumberInt =
     HasArgument("BuildNumber") ? Argument<int>("BuildNumber") :
     AppVeyor.IsRunningOnAppVeyor ? AppVeyor.Environment.Build.Number :
     TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Build.BuildNumber :
+    TFBuild.IsRunningOnAzurePipelinesHosted ? 0 :
     EnvironmentVariable("BuildNumber") != null ? int.Parse(EnvironmentVariable("BuildNumber")) : 0;
 
 var buildNumber = buildNumberInt.ToString("D4");
 
 var buildVersion = "1.0.0";
 
-var buildType = (AppVeyor.IsRunningOnAppVeyor || TravisCI.IsRunningOnTravisCI) ? "ci-"  : "local-";
+var buildType = (AppVeyor.IsRunningOnAppVeyor || TravisCI.IsRunningOnTravisCI  || TFBuild.IsRunningOnAzurePipelinesHosted) ? "ci-"  : "local-";
 
 buildType = buildType + buildNumber;
 
-var tagName = EnvironmentVariable("APPVEYOR_REPO_TAG_NAME");
-if (tagName != null) {
-    // On AppVeyor
+var tagName = EnvironmentVariable("BUILD_SOURCEBRANCH");
+if (tagName != null && tagName.StartsWith("refs/tags/v")) {
+    tagName = EnvironmentVariable("BUILD_SOURCEBRANCHNAME");
+    // On Azure
     buildVersion =  tagName.Substring(1);
     if (!tagName.Contains("-")) {
         // Building a full release
@@ -67,7 +69,7 @@ Task("Restore")
     .IsDependentOn("Restore")
     .Does(() =>
     {
-        var projects = GetFiles("./**/*.csproj");
+        var projects = GetFiles("./src/**/*.csproj").Concat(GetFiles("./test/**/*.csproj"));
         foreach(var project in projects)
         {
             DotNetCoreBuild(

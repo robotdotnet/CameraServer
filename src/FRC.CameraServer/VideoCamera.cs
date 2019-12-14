@@ -1,8 +1,10 @@
-namespace CSCore
+﻿using FRC.CameraServer.Interop;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace FRC.CameraServer
 {
-    /// <summary>
-    /// A source that represents a video camera.
-    /// </summary>
     public class VideoCamera : VideoSource
     {
         private readonly object m_mutex = new object();
@@ -34,10 +36,8 @@ namespace CSCore
             public const int FixedFlourescent2 = 5200;
         }
 
-        /// <summary>
-        /// Creates a VideoCamera from a handle
-        /// </summary>
-        protected VideoCamera(int handle) : base(handle)
+        protected internal VideoCamera(CS_Source source) 
+            : base(source)
         {
 
         }
@@ -51,14 +51,14 @@ namespace CSCore
             {
                 lock (m_mutex)
                 {
-                return NativeMethods.GetCameraBrightness(Handle);
+                    return CsCore.GetCameraBrightness(Handle);
                 }
             }
             set
             {
                 lock (m_mutex)
                 {
-                NativeMethods.SetCameraBrightness(Handle, value);
+                    CsCore.SetCameraBrightness(Handle, value);
                 }
             }
         }
@@ -70,7 +70,7 @@ namespace CSCore
         {
             lock (m_mutex)
             {
-                NativeMethods.SetCameraWhiteBalanceAuto(Handle);
+                CsCore.SetCameraWhiteBalanceAuto(Handle);
             }
         }
 
@@ -81,7 +81,7 @@ namespace CSCore
         {
             lock (m_mutex)
             {
-                NativeMethods.SetCameraWhiteBalanceHoldCurrent(Handle);
+                CsCore.SetCameraWhiteBalanceHoldCurrent(Handle);
             }
         }
 
@@ -92,7 +92,7 @@ namespace CSCore
         {
             lock (m_mutex)
             {
-                NativeMethods.SetCameraWhiteBalanceManual(Handle, value);
+                CsCore.SetCameraWhiteBalanceManual(Handle, value);
             }
         }
 
@@ -103,7 +103,7 @@ namespace CSCore
         {
             lock (m_mutex)
             {
-                NativeMethods.SetCameraExposureAuto(Handle);
+                CsCore.SetCameraExposureAuto(Handle);
             }
         }
 
@@ -114,7 +114,7 @@ namespace CSCore
         {
             lock (m_mutex)
             {
-                NativeMethods.SetCameraExposureHoldCurrent(Handle);
+                CsCore.SetCameraExposureHoldCurrent(Handle);
             }
         }
 
@@ -125,7 +125,7 @@ namespace CSCore
         {
             lock (m_mutex)
             {
-                NativeMethods.SetCameraExposureManual(Handle, value);
+                CsCore.SetCameraExposureManual(Handle, value);
             }
         }
     }

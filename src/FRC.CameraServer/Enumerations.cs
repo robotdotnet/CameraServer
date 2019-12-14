@@ -1,9 +1,8 @@
-﻿using System;
-// ReSharper disable InconsistentNaming
+using System;
 
-namespace CSCore
+namespace FRC.CameraServer
 {
-    /// <summary>
+/// <summary>
     /// Error status values returned from native methods
     /// </summary>
     public enum StatusValue
@@ -47,7 +46,9 @@ namespace CSCore
         /// <summary>
         /// An HTTP camera was given a bad URL
         /// </summary>
-        BadUrl = -2007
+        BadUrl = -2007,
+        TelemetryNotEnabled = -2008,
+        UnsupportedMode = -2009
     }
 
     /// <summary>
@@ -311,4 +312,31 @@ namespace CSCore
         /// </summary>
         SinkDisabled = 0x08
     }
+
+    public enum ConnectionStrategy
+    {
+        /**
+         * Automatically connect or disconnect based on whether any sinks are
+         * connected to this source.  This is the default behavior.
+         */
+        AutoManage = 0,
+
+        /**
+         * Try to keep the connection open regardless of whether any sinks are
+         * connected.
+         */
+        KeepOpen,
+
+        /**
+         * Never open the connection.  If this is set when the connection is open,
+         * close the connection.
+         */
+        ForceClose
+    };
+
+    public enum TelemetryKind
+    {
+        BytesReceived = 1,
+        FramesReceived = 2
+    };
 }

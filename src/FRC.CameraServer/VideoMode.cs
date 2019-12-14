@@ -1,12 +1,15 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
 
-namespace CSCore
+namespace FRC.CameraServer
 {
     /// <summary>
     /// VideoModes for Sinks and Sources
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct VideoMode
+    public readonly struct VideoMode
     {
         /// <summary>
         /// The PixelFormat for the video

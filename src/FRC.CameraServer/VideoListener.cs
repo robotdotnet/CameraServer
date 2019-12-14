@@ -1,6 +1,9 @@
-﻿using System;
+﻿using FRC.CameraServer.Interop;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace CSCore
+namespace FRC.CameraServer
 {
     /// <summary>
     /// An event listener for camera events
@@ -17,9 +20,9 @@ namespace CSCore
         /// <param name="listener">The callback function</param>
         /// <param name="eventMask">A bitmask of <see cref="EventKind"/> to listen for</param>
         /// <param name="immediateNotify">Whether callback should be called immediately for all requested events</param>
-        public VideoListener(Action<VideoEvent> listener, EventKind eventMask, bool immediateNotify)
+        public VideoListener(VideoEventDelegate listener, EventKind eventMask, bool immediateNotify)
         {
-            m_handle = NativeMethods.AddListener(listener, eventMask, immediateNotify);
+            m_handle = CsCore.AddListener(listener, eventMask, immediateNotify);
         }
 
         /// <summary>
@@ -27,18 +30,18 @@ namespace CSCore
         /// </summary>
         public void Dispose()
         {
-            if (m_handle != 0)
+            if (m_handle.IsValid())
             {
-                NativeMethods.RemoveListener(m_handle);
+                CsCore.RemoveListener(m_handle);
             }
-            m_handle = 0;
+            m_handle = new CS_Listener(0);
         }
 
         /// <summary>
         /// Gets if the listener is valid and enabled
         /// </summary>
-        public bool IsValid => m_handle != 0;
+        public bool IsValid => m_handle.IsValid();
 
-        private int m_handle;
+        private CS_Listener m_handle;
     }
 }
