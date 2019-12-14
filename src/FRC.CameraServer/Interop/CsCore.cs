@@ -13,11 +13,13 @@ namespace FRC.CameraServer.Interop
 {
     public static class CsCore 
     {
-        private readonly static ICsCore m_cscore;
+        private static ICsCore m_cscore;
 
         private unsafe readonly static char* NullTerminator;
 
-        static CsCore() 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        static CsCore()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         {
             unsafe 
             {
@@ -25,46 +27,44 @@ namespace FRC.CameraServer.Interop
                 *NullTerminator = '\0';
             }
 
-            var nativeLoader = new NativeLibraryLoader();
-
-            string[] commandArgs = Environment.GetCommandLineArgs();
-            foreach (var commandArg in commandArgs)
+            if (CsCoreHelper.LoadOnStaticInit)
             {
-                //search for a line with the prefix "-cscore:"
-                if (commandArg.ToLower().Contains("-cscore:"))
-                {
-                    //Split line to get the library.
-                    int splitLoc = commandArg.IndexOf(':');
-                    string file = commandArg.Substring(splitLoc + 1);
+                var cscore = CsCoreHelper.Load();
+                m_cscore = cscore ?? throw new InvalidOperationException("Failed to load ntcore");
+            }
+        }
 
-                    //If the file exists, just return it so dlopen can load it.
-                    if (File.Exists(file))
-                    {
-                        nativeLoader.LoadNativeLibrary<ICsCore>(file, true);
-                        var cscore2 = nativeLoader.LoadNativeInterface<ICsCore>();
-                        m_cscore = cscore2 ?? throw new Exception("Failed to load native interface?");
-                        return;
-                    }
-                }
+        public static void ForceLoad()
+        {
+            if (m_cscore == null)
+            {
+                var cscore = CsCoreHelper.Load();
+                m_cscore = cscore ?? throw new InvalidOperationException("Failed to load ntcore");
+            }
+        }
+
+        public static void ForceLoadDirect(string directPath)
+        {
+            if (m_cscore != null)
+            {
+                throw new InvalidOperationException("Direct load not supported after implict load");
             }
 
-            const string resourceRoot = "FRC.CameraServer.DesktopLibraries.libraries.";
-
-            nativeLoader.AddLibraryLocation(OsType.Windows32,
-                resourceRoot + "windows.x86.cscorejni.dll");
-            nativeLoader.AddLibraryLocation(OsType.Windows64,
-                resourceRoot + "windows.x86_64.cscorejni.dll");
-            nativeLoader.AddLibraryLocation(OsType.Linux64,
-                resourceRoot + "linux.x86_64.libcscorejni.so");
-            nativeLoader.AddLibraryLocation(OsType.MacOs64,
-                resourceRoot + "osx.x86_64.libcscorejni.dylib");
-            nativeLoader.AddLibraryLocation(OsType.roboRIO, "ntcore");
-
-            nativeLoader.LoadNativeLibraryFromReflectedAssembly("FRC.CameraServer.DesktopLibraries");
-            var cscore = nativeLoader.LoadNativeInterface<ICsCore>();
-            m_cscore = cscore ?? throw new Exception("Failed to load native interface?");
+            var nativeLoader = new NativeLibraryLoader();
+            nativeLoader.LoadNativeLibrary<ICsCore>(directPath, true);
+            var ntcore = nativeLoader.LoadNativeInterface<ICsCore>();
+            m_cscore = ntcore ?? throw new Exception("Failed to load native interface?");
         }
-        
+
+        public static void LoadExisting(ICsCore cscore)
+        {
+            if (m_cscore != null)
+            {
+                throw new InvalidOperationException("Direct load not supported after implict load");
+            }
+            m_cscore = cscore;
+        }
+
         private static void ThrowStatusException(int status)
         {
             StatusValue s = (StatusValue)status;
